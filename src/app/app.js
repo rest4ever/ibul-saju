@@ -912,7 +912,7 @@ window.addEventListener('DOMContentLoaded', () => {
   $('#ask-no').addEventListener('click', () => { hideAsk(); typeBubble('알겠소! 천천히 골라 보시오~ 🍵', say('', $('.scene'), 'ask_no')); });
   $('#t-to-saju').addEventListener('click', () => goStep(10));
   $('#home-btn').addEventListener('click', () => { stopTalk(); chMax = 1; $('#result').hidden = true; $('#stage').hidden = false; goStep(0); window.scrollTo({top: 0}); });
-  initTarot(goStep, (t) => { typeBubble(t); }, ART.face);
+  initTarot(goStep, (t) => { typeBubble(t); }, ART.face, (k) => say('', $('.scene'), k));
   initGloss();
   $$('.panel.guide, .panel[data-step="30"]').forEach((p) => markTerms(p));
   $$('.lv:not(.tlv)').forEach((b) => b.addEventListener('click', () => {
@@ -944,7 +944,7 @@ window.addEventListener('DOMContentLoaded', () => {
     try {
       readDate('me');
       if (!sexPicked()) throw new Error('성별을 골라 주시오. 대운 방향과 연애·결혼운에 꼭 필요하오!');
-      if (yearUnchecked('me')) { $('#err2').innerHTML = YEAR_ASK; typeBubble('태어난 해가 정말 <b>1990년</b>이오?<br>맞으면 한 번 더 누르시오 🤔'); return; }
+      if (yearUnchecked('me')) { $('#err2').innerHTML = YEAR_ASK; typeBubble('태어난 해가 정말 <b>1990년</b>이오?<br>맞으면 한 번 더 누르시오 🤔', say('', $('.scene'), 'year_ask')); return; }
       goStep(3);
     } catch (err) { $('#err2').textContent = err.message; $('#bubble-text').textContent = err.message; }
   });

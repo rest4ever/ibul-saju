@@ -94,18 +94,28 @@ function wait(ms) {
 }
 function scrollTo(el) { try { el.scrollIntoView({behavior: fast() ? 'auto' : 'smooth', block: 'nearest'}); } catch (e) { /* 무시 */ } }
 const plainLen = (h) => h.replace(/<[^>]*>/g, '').length;
-async function dl(html, cls = '') {   // 도령이 말하기
+function audioDone(au) {   // 녹음이 끝날 때까지 기다림 (대화창을 누르면 건너뜀)
+  return new Promise((res) => {
+    let fin = false;
+    const f = () => { if (fin) return; fin = true; clearTimeout(t); skip = null; res(); };
+    const t = setTimeout(f, 40000);
+    au.addEventListener('ended', f, {once: true}); au.addEventListener('nogo', f, {once: true});
+    skip = () => { try { au.pause(); } catch (e) { /* 무시 */ } f(); };
+  });
+}
+async function dl(html, cls = '', key = null) {   // 도령이 말하기 (key: 녹음 파일 이름, 있으면 소리와 함께)
   const run = RUN;
   const box = $('#t-chat');
   const m = document.createElement('div');
   m.className = 'msg d typing'; m.innerHTML = '<span class="av"><img alt="" src="' + (T.face || '') + '"></span><div class="tx"><i></i><i></i><i></i></div>';
   box.appendChild(m); scrollTo(m);
-  await wait(Math.min(1300, 400 + plainLen(html) * 10));
+  const au = key && T.speak ? T.speak(key) : null;
+  await wait(au ? 350 : Math.min(1300, 400 + plainLen(html) * 10));
   if (run !== RUN) throw new Error('stop');
   m.classList.remove('typing'); if (cls) m.classList.add(cls);
   m.querySelector('.tx').innerHTML = html;
   scrollTo(m);
-  await wait(250);
+  if (au) await audioDone(au); else await wait(250);
   if (run !== RUN) throw new Error('stop');
   return m;
 }
@@ -193,44 +203,48 @@ async function consult() {
   $('#t-qshow').innerHTML = `<b>${tp.label}</b>${T.q ? ` · “${T.q}”` : ''}`;
   $('#t-map').innerHTML = mapHTML(ks, 0);
   try {
-    await dl(T.q ? `자, 그대가 가져온 질문은 이것이었소.<br><b>“${T.q}”</b>` : `자, 오늘 주제는 <b>${io(tp.label)}</b>.`);
-    await dl(sp.n === 1 ? '고른 카드는 한 장이오. 같이 천천히 뒤집어 보겠소.' : `고른 카드는 세 장, 자리는 <b>${sp.pos.join(' → ')}</b> 순서요. 실제 상담처럼 한 장씩 뒤집으며 같이 읽겠소.`);
+    await dl(T.q ? `그대가 가져온 질문은 이것이었소.<br><b>“${T.q}”</b>` : `오늘 주제는 <b>${io(tp.label)}</b>.`);
+    await dl('자, 그대가 고른 카드를 같이 보겠소. 실제 상담처럼, 한 장씩 뒤집으며 읽어 보리다.', '', 'tc_start');
+    await dl(sp.n === 1 ? '고른 카드는 한 장이오.' : `고른 카드는 세 장, 자리는 <b>${sp.pos.join(' → ')}</b> 순서요.`);
     if (newbie) await dl('💡 카드 읽는 순서를 알려 드리리다.<br>① 이 자리가 무슨 뜻인지 → ② 그림에 뭐가 있는지 → ③ 카드의 뜻 → ④ 그대 질문에 대 보기. 이 순서만 알면 타로 반은 아는 거요!', 'tip');
     for (let j = 0; j < ks.length; j += 1) {
       const k = ks[j], C = TAROT[k];
       await dl(`${sp.n > 1 ? `${j + 1}번째 자리는 <b>${sp.pos[j]}</b>요. ` : ''}${POS_DESC[tp.spread][j]}`);
       const card = cardMsg(k, j);
       T.say(`${sp.n > 1 ? `${j + 1}번째, "${sp.pos[j]}" 카드요.<br>` : ''}마음의 준비가 되면 뒤집으시오 🃏`);
+      if (T.speak) T.speak('tc_flip');
       await flipWait(card);
       if (run !== RUN) return;
       $('#t-map').innerHTML = mapHTML(ks, j + 1);
       T.say(`<b>${C[0]}</b> 카드가 나왔소! ✨`);
-      await dl(`나온 카드는… <b>${C[0]}</b>(${C[1]}) 카드! 22장 중 ${k}번이오.`, 'big');
-      await dl(`🖼 그림부터 보시오. 전통 타로 그림에서는 ${SYMBOL[k]}`);
+      await dl(`나온 카드는… <b>${C[0]}</b>(${C[1]}) 카드! 22장 중 ${k}번이오.`, 'big', `tc_c${k}`);
+      await dl(`🖼 그림부터 보시오. 전통 타로 그림에서는 ${SYMBOL[k]}`, '', `tc_s${k}`);
       await dl(`🔑 핵심어는 <b>${C[2]}</b>. ${C[3]}`);
       await dl(`🔮 ${topicLine(k, j)}`, 'key');
       const others = [3, 4, 5].filter((f) => f !== tp.field && !(f === 3 && tp.field !== 3));
       const more = await ask([{label: j < ks.length - 1 ? '다음 카드 볼래요 →' : '흐름 정리해 주세요 →', v: 'next'}, {label: '이 카드 더 알려 주세요', v: 'more'}]);
       if (more === 'more') {
+        await dl('좋소, 이 카드를 다른 쪽으로도 읽어 드리리다.', '', 'tc_more');
         await dl(others.map((f) => `<b>${FIELD_NAME[f]}</b> 보면: ${C[f]}`).join('<br>') + `<br><b>오늘의 한마디</b>: ${C[6]}`);
         if (newbie) await dl('💡 같은 카드라도 무엇을 물었는지에 따라 읽는 쪽이 달라져요. 그래서 질문을 먼저 정하는 거요.', 'tip');
         await ask([{label: j < ks.length - 1 ? '좋아요, 다음 카드 →' : '좋아요, 흐름 정리해 주세요 →', v: 'next'}]);
       }
     }
     T.say('카드를 한데 놓고<br>흐름을 읽어 보겠소 📜');
-    await dl(sp.n > 1 ? '자, 이제 카드를 한데 놓고 흐름을 읽겠소. 타로는 한 장 한 장보다 <b>"어디서 어디로 가는지"</b>가 핵심이오.' : '자, 이제 정리해 보겠소.');
+    await dl(sp.n > 1 ? '자, 이제 카드를 한데 놓고 흐름을 읽겠소. 타로는 한 장 한 장보다 <b>"어디서 어디로 가는지"</b>가 핵심이오.' : '자, 이제 정리해 보겠소.', '', sp.n > 1 ? 'tc_flow' : null);
     await dl(readFlow(ks), 'key');
     await dl(`⚖️ ${toneLine(ks)}`);
     const keyK = ks.length === 1 ? ks[0] : T.topic === 'love' ? ks[2] : ks[1];
+    await dl('마지막으로, 도령의 조언이오.', '', 'tc_advice');
     await dl(`🍀 <b>도령의 조언</b><br>${TAROT[keyK][6]}`, 'advice');
-    await dl('타로는 정해진 미래가 아니라 <b>지금 마음을 비추는 거울</b>이오. 마음에 남은 한 줄만 챙겨 가시오. 또 고민이 생기면 언제든 문 두드리시오 🏮');
+    await dl('타로는 정해진 미래가 아니라 <b>지금 마음을 비추는 거울</b>이오. 마음에 남은 한 줄만 챙겨 가시오. 또 고민이 생기면 언제든 문 두드리시오 🏮', '', 'tc_end');
     T.say('상담 끝! 마음에 남는 한 줄을<br>기억해 두시오 ✨');
     $('#t-end').hidden = false; scrollTo($('#t-end'));
   } catch (e) { /* 다시 보기로 멈춤 */ }
 }
 
-export function initTarot(goStep, say, face) {
-  T.goStep = goStep; T.say = say; T.face = face || '';
+export function initTarot(goStep, say, face, speak) {
+  T.goStep = goStep; T.say = say; T.face = face || ''; T.speak = speak || null;
   $('#t-chat').addEventListener('click', (e) => { if (!e.target.closest('.t-card') && skip) skip(); });   // 대화창을 누르면 빨리 넘김
   $$('.tlv').forEach((b) => b.addEventListener('click', () => { document.body.dataset.tl = b.dataset.tl; goStep(b.dataset.tl === 'new' ? 31 : 33); }));
   $$('[data-tnext]').forEach((b) => b.addEventListener('click', () => goStep(+b.dataset.tnext)));
