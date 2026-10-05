@@ -14,7 +14,7 @@ const ORDER = ['목', '화', '토', '금', '수'];
 const GEN = {목: '화', 화: '토', 토: '금', 금: '수', 수: '목'}; // 생(生)
 const CTRL = {목: '토', 토: '수', 수: '화', 화: '금', 금: '목'}; // 극(剋)
 const HAP = [['갑', '기'], ['을', '경'], ['병', '신'], ['정', '임'], ['무', '계']];
-const SITE = '도령의 고민 상담소';
+const SITE = '이불 속 고민 상담소';   // 10/5 사용자: '이불 속 고민 상담소'로 이름 유지
 const YANG = new Set(['갑', '병', '무', '경', '임']);
 const BRANCH_MAIN = AN.BRANCH_MAIN;
 const sipsin = AN.sipsin;
@@ -38,7 +38,8 @@ let LV = 'mid';   // 사주 아는 정도: new 처음 / mid 조금 / pro 잘 앎
 const ART_IDX = {0: 0, 10: 1, 11: 4, 12: 2, 13: 4, 14: 2, 15: 4, 16: 2, 1: 1, 2: 2, 3: 1, 4: 4, 30: 0, 31: 4, 32: 2, 33: 1, 34: 0, 35: 2, 36: 4, 37: 1, 38: 2};   // 0 인사 1 질문 2 등불 4 사주책
 const DOT_IDX = {0: 0, 10: 0, 11: 0, 12: 0, 13: 0, 14: 0, 15: 0, 16: 0, 1: 1, 2: 2, 3: 3, 4: 3};
 // 처음 설명 컷이 6개로 늘면서(10/5 사용자: "사주가 어떻게 시작된 건지") 기존 녹음 step11~14 → 13~16번 컷에 씀. 11·12번 컷은 아직 녹음 없음
-const AUDIO_OF = {0: 'home', 4: null, 11: 'g_hist', 12: 'g_joseon', 13: 'step11', 14: 'step12', 15: 'step13', 16: 'step14', 30: 't30', 31: 't31', 32: 't32', 33: 't33', 34: 't34', 35: 't35', 36: 't36', 37: 't37', 38: 't38'};   // 10/5 추가 녹음: 상담소 인사·처음 설명 11·12·타로방
+const AUDIO_OF = {0: null,   // 인사 녹음은 옛 이름이라 새 이름으로 다시 녹음할 때까지 끔
+  4: null, 11: 'g_hist', 12: 'g_joseon', 13: 'step11', 14: 'step12', 15: 'step13', 16: 'step14', 30: 't30', 31: 't31', 32: 't32', 33: 't33', 34: 't34', 35: 't35', 36: 't36', 37: 't37', 38: 't38'};   // 10/5 추가 녹음: 상담소 인사·처음 설명 11·12·타로방
 const EASY_SS = {비견: '나와 같은 편', 겁재: '경쟁자', 식신: '재주', 상관: '표현', 편재: '큰돈', 정재: '월급·저축', 편관: '압박·도전', 정관: '직장·명예', 편인: '촉·공부', 정인: '도움·문서'};
 // 도령 입·눈 위치 (그림 640×640 기준, 10/5 그림에서 잰 값). 0 인사 1 질문 2 등불 4 사주책
 const FX = {
@@ -183,7 +184,7 @@ function bubbleFor(n) {   // 도령 말투: 살짝 사극투 (10/5 사용자 선
   if (n === 0) {
     return inviter
       ? `<b>${inviter.n}</b>님이 궁합 보자고 링크를 보냈구려 💌<br>생일만 알려 주면 바로 봐 드리리다!`
-      : '어서 오시오~ <b>도령의 고민 상담소</b>에 잘 왔소 🏮<br>무슨 고민이 있어 왔소? 사주로 볼까, 타로로 볼까?';
+      : '어서 오시오~ <b>이불 속 고민 상담소</b>에 잘 왔소 🏮<br>무슨 고민이 있어 왔소? 사주로 볼까, 타로로 볼까?';
   }
   if (n >= 30) return tarotBubble(n);
   if (n === 10) return '그대, 사주는 좀 아시오?';
@@ -203,7 +204,7 @@ function goStep(n) {
   stepNow = n;
   const room = n === 0 ? 'home' : n >= 30 ? 'tarot' : 'saju';
   document.body.classList.toggle('room-tarot', room === 'tarot');
-  $('#top-title').textContent = room === 'home' ? '🏮 도령의 고민 상담소' : room === 'tarot' ? '🃏 도령의 타로방' : '📜 도령의 사주방';
+  $('#top-title').textContent = room === 'home' ? '🏮 이불 속 고민 상담소' : room === 'tarot' ? '🃏 이불 속 타로방' : '📜 이불 속 사주방';
   $('#home-btn').hidden = room === 'home';
   $$('.panel').forEach((p) => { p.hidden = +p.dataset.step !== n; });
   const au = say(bubbleFor(n), $('.scene'), n === 0 && inviter ? null : (n in AUDIO_OF ? AUDIO_OF[n] : 'step' + n));
@@ -229,7 +230,18 @@ function setupDate(prefix) {   // 10/5 사용자: 안 고르고 넘어가지면 
   const y = $(`#${prefix}-y`);
   fillSelect(y, 1900, 2050, '년', 1990, '태어난 해');
   y.dataset.touched = '';
-  y.addEventListener('change', () => { y.dataset.touched = '1'; });
+  const yt = $(`#${prefix}-yt`);
+  y.addEventListener('change', () => { y.dataset.touched = '1'; if (yt) { yt.value = y.value; yt.classList.remove('bad'); } });
+  // 10/5 사용자: "년도는 실제 입력 가능하게도" → 숫자 4자리를 쓰면 위 칸이 그 해로 바뀐다
+  if (yt) {
+    yt.addEventListener('input', () => {
+      yt.value = yt.value.replace(/[^0-9]/g, '').slice(0, 4);
+      const v = +yt.value;
+      if (yt.value.length < 4) { yt.classList.remove('bad'); return; }
+      if (v >= 1900 && v <= 2050) { y.value = String(v); y.dataset.touched = '1'; yt.classList.remove('bad'); }
+      else yt.classList.add('bad');
+    });
+  }
   fillSelect($(`#${prefix}-m`), 1, 12, '월', null, '월');
   fillSelect($(`#${prefix}-d`), 1, 31, '일', null, '일');
 }
@@ -244,6 +256,8 @@ function yearUnchecked(prefix) {
 const YEAR_ASK = '태어난 해가 정말 <b>1990년</b>이오? 기본으로 골라 둔 해라 한 번 더 묻소. 맞으면 버튼을 한 번 더 누르시오!';
 
 function readDate(prefix) {
+  const yt = $(`#${prefix}-yt`);
+  if (yt && yt.classList.contains('bad')) throw new Error('태어난 해는 1900년부터 2050년 사이로 써 주시오.');
   if (!$(`#${prefix}-y`).value || !$(`#${prefix}-m`).value || !$(`#${prefix}-d`).value) throw new Error('태어난 해·달·날을 모두 골라 주시오. 하나라도 비면 사주를 세울 수 없소!');
   const y = +$(`#${prefix}-y`).value, m = +$(`#${prefix}-m`).value, d = +$(`#${prefix}-d`).value;
   const lunar = $(`#${prefix}-cal`).value === 'lunar';
@@ -792,7 +806,7 @@ async function makeGh() {
   g.fillStyle = HANJI; roundRect(g, 70, 770, W - 140, 400, 40); g.fill();
   g.fillStyle = INK; g.font = `38px ${BF}`;
   wrap(g, r.text, W / 2, 850, W - 220, 62, 5);
-  g.fillStyle = GOLD2; g.font = `34px ${TF}`; g.fillText('너랑 나는? 도령의 고민 상담소에서 확인 💌', W / 2, 1235);
+  g.fillStyle = GOLD2; g.font = `34px ${TF}`; g.fillText('너랑 나는? 이불 속 고민 상담소에서 확인 💌', W / 2, 1235);
   foot(g);
   return toBlob(c);
 }
@@ -817,7 +831,7 @@ async function onMakeLink() {
   if (!last) return;
   const n = nick() || '친구';
   const url = location.origin + location.pathname + '#g=' + encodeURIComponent(last.ilgan) + '&n=' + encodeURIComponent(n);
-  const text = `[${n}] 도령의 고민 상담소에서 우리 궁합 볼래? 생일만 넣으면 바로 나와 💌`;
+  const text = `[${n}] 이불 속 고민 상담소에서 우리 궁합 볼래? 생일만 넣으면 바로 나와 💌`;
   try {
     if (navigator.share) { await navigator.share({title: SITE, text, url}); $('#link-msg').textContent = '보냈어요! 친구 답장 기다리기 💌'; return; }
   } catch (e) { if (e && e.name === 'AbortError') return; }
@@ -961,28 +975,23 @@ window.addEventListener('DOMContentLoaded', () => {
   document.body.dataset.lv = LV;
   $$('.lv-switch button').forEach((b) => b.addEventListener('click', () => { LV = b.dataset.lv; document.body.dataset.lv = LV; if ($('#more-hidden')) $('#more-hidden').open = LV === 'pro'; }));
   drawFx(0); startBlink();
-  // 10/5 사용자: "처음에는 문 올리면서 도령의 고민 상담소에 온 걸 환영하고 바로 멘트 들어가면서 고를 수 있게"
-  const door = $('#door');
-  let opened = false;
-  const openDoor = () => {
-    if (opened) return; opened = true;
-    door.classList.add('open');
-    setTimeout(() => {
-      goStep(0);
-      if (location.hash === '#tarot') { enterTarot(); goStep(30); }   // 타로방 바로가기 링크는 묻지 않고 들어간다
-    }, reduceMotion() ? 0 : 450);
-    setTimeout(() => door.classList.add('gone'), reduceMotion() ? 0 : 1200);
-  };
-  // 휴대폰은 화면을 한 번 눌러야 소리가 나서, 문을 톡 누르면 도령 목소리를 켠다 (전에 목소리를 끈 사람은 그대로 꺼 둠)
-  const tapDoor = () => {
+  // 10/5 사용자: "처음에는 문 올리면서 상담소에 온 걸 환영하고 바로 멘트" + "툭 누르면 열려야지"
+  // 문이 올라가는 건 index.html 안의 작은 스크립트가 바로 처리하고, 여기서는 'door-open' 신호를 받아 인사를 시작한다.
+  let greeted = false;
+  const greet = () => {
+    if (greeted) return; greeted = true;
+    // 휴대폰은 화면을 한 번 눌러야 소리가 나서, 문을 누르면 도령 목소리를 켠다 (전에 목소리를 끈 사람은 그대로 꺼 둠)
     let off = false;
     try { off = localStorage.getItem('ibul-voice') === '0'; } catch (e) { /* 무시 */ }
     if (VOICE_READY && !off && !voice.on) setVoice(true);
-    openDoor();
+    const go = () => {
+      goStep(0);
+      if (location.hash === '#tarot') { enterTarot(); goStep(30); }   // 타로방 바로가기 링크는 묻지 않고 들어간다
+    };
+    go();   // 누른 그 순간에 바로 시작해야 휴대폰에서도 소리가 난다 (문이 올라가는 동안 인사가 나옴)
   };
-  door.addEventListener('click', tapDoor);
-  door.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') tapDoor(); });
-  setTimeout(openDoor, reduceMotion() ? 0 : 4000);
+  document.addEventListener('door-open', greet);
+  if (window.__doorOpen || !$('#door')) greet();
 });
 
 // 시험용 (자동 검사에서만 씀)

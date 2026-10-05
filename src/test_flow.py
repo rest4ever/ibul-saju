@@ -44,7 +44,7 @@ async def main():
         await pg.click('#make-link'); await pg.wait_for_timeout(300)
         clip=await pg.evaluate('navigator.clipboard.readText()'); out['clip']=clip
         pg2=await ctx.new_page(); pg2.on('pageerror',lambda e: errs.append(str(e)))
-        await pg2.goto(clip.split(' ')[-1]); await pg2.wait_for_timeout(1200)
+        await pg2.goto(clip.split(' ')[-1]); await pg2.click('#door'); await pg2.wait_for_timeout(1400)
         out['inv']=await pg2.get_attribute('#bubble-text','data-full'); await pg2.screenshot(path='f_invite.png')
         await fill_me(pg2,1992,3,3)
         out['gh']=await pg2.inner_text('#gh-result')

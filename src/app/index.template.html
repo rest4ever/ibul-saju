@@ -3,20 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>도령의 고민 상담소</title>
+<title>이불 속 고민 상담소</title>
 <meta name="description" content="도령이 사주와 타로로 고민을 들어 드려요. 타고난 성격, 2027년 운세, 타로 상담까지 무료. 생년월일은 어디에도 저장하지 않아요.">
-<meta property="og:title" content="도령의 고민 상담소">
+<meta property="og:title" content="이불 속 고민 상담소">
 <meta property="og:description" content="도령의 사주 · 타로 상담 · 2027 신년운">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Sunflower:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
 /* 레이아웃: 폰 폭 440px, 위는 웹툰처럼 캐릭터 + 말풍선, 아래는 한지 패널. 밤 방 안 + 한지 + 금빛 등불 */
 :root{
   --night:#1E1B3A; --night2:#2A2650; --hanji:#F6EFE0; --hanji2:#EDE2CB; --ink:#2B2522; --sub:#6E6255;
   --bamboo:#2F5D4A; --gold:#D9A441; --gold2:#F1C873; --rose:#E8A9B4; --line:#DCCFB5; --moon:#CFC6E8;
-  --title:"Jua", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; --body:"Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --talk:"Sunflower", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; --title:"Jua", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; --body:"Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   color-scheme: dark;
 }
 *{box-sizing:border-box}
@@ -118,6 +118,14 @@ footer b{color:#F6EFE0}
 .top{position:relative}.home-btn{z-index:3;position:absolute;left:0;top:50%;transform:translateY(-50%);width:auto;margin:0;padding:8px 13px;font-family:var(--body);font-weight:700;font-size:13px;border-radius:999px;background:#2A2650;color:#CFC6E8;box-shadow:none;border:1.5px solid #4A4478;min-height:36px}
 .rooms{display:flex;flex-direction:column;gap:10px}
 select.ask{border-color:var(--gold);box-shadow:0 0 0 3px rgba(217,164,65,.45)}
+/* 10/5 사용자: 말풍선 글씨체 E(해바라기) */
+#bubble-text,.msg.d .tx,.talk .say{font-family:var(--talk);font-weight:500}
+#bubble-text b,.msg.d .tx b,.talk .say b{font-weight:700}
+.msg.big .tx{font-family:var(--title);font-weight:400}
+.ytype{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:14px;color:var(--sub)}
+.ytype label{margin:0;font-weight:700;font-size:14px;color:var(--sub);white-space:nowrap}
+.ytype input{flex:0 0 96px!important;width:96px;padding:8px 10px!important;text-align:center;font-size:16px}
+.ytype input.bad{border-color:#B3261E}
 .enter-ask{text-align:center;animation:unfold .4s cubic-bezier(0,0,0,1)}
 .ea-ic{font-size:44px;line-height:1}
 .enter-ask h3{font-family:var(--title);font-weight:400;font-size:24px;margin:6px 0 10px;color:var(--ink)}
@@ -337,9 +345,17 @@ button.ghost-dark{background:transparent;color:var(--bamboo);box-shadow:none;bor
 </style>
 </head>
 <body>
-<div id="door" class="door" role="button" tabindex="0" aria-label="상담소 문 열기"><div class="door-panel"><div class="lattice"></div><div class="sign"><small>어서 오시오</small><b>도령의<br>고민 상담소</b><span>🏮</span></div><p class="door-hint">톡 누르면 문이 열려요</p></div></div>
+<div id="door" class="door" role="button" tabindex="0" aria-label="상담소 문 열기"><div class="door-panel"><div class="lattice"></div><div class="sign"><small>어서 오시오</small><b>이불 속<br>고민 상담소</b><span>🏮</span></div><p class="door-hint">톡 누르면 문이 열려요</p></div></div>
+<script>/* 문 열기는 본 프로그램과 따로 바로 동작 (10/5 사용자: "툭 누르면 열려야지") */
+(function(){var d=document.getElementById('door');if(!d)return;var done=false;
+function open(){if(done)return;done=true;d.classList.add('open');window.__doorOpen=true;
+try{document.dispatchEvent(new CustomEvent('door-open'))}catch(e){}
+setTimeout(function(){d.classList.add('gone')},1200);}
+d.addEventListener('pointerup',open);d.addEventListener('click',open);d.addEventListener('touchend',open);
+d.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' ')open();});})();
+</script>
 <div class="wrap">
-  <div class="top"><button type="button" class="home-btn" id="home-btn" hidden>← 상담소</button><span id="top-title">🏮 도령의 고민 상담소</span></div>
+  <div class="top"><button type="button" class="home-btn" id="home-btn" hidden>← 상담소</button><span id="top-title">🏮 이불 속 고민 상담소</span></div>
   <button type="button" class="voice-btn" id="voice" aria-pressed="false">🔈 도령 목소리 켜기</button>
 
   <section id="stage">
@@ -437,6 +453,7 @@ button.ghost-dark{background:transparent;color:var(--bamboo);box-shadow:none;bor
         <div id="me-leapwrap" class="check" hidden><input type="checkbox" id="me-leap"><label for="me-leap">윤달이에요</label></div>
         <label>태어난 날</label>
         <div class="row"><select id="me-y" aria-label="년"></select><select id="me-m" aria-label="월"></select><select id="me-d" aria-label="일"></select></div>
+        <div class="ytype"><label for="me-yt">⌨️ 태어난 해 직접 쓰기</label><input id="me-yt" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="예: 1995"><span>년</span></div>
         <label>성별 <span class="opt">(꼭 골라 주세요)</span></label>
         <div class="seg sex" role="group" aria-label="성별">
           <button type="button" data-sex="여">여성</button>
@@ -715,6 +732,7 @@ button.ghost-dark{background:transparent;color:var(--bamboo);box-shadow:none;bor
         <div class="row"><select id="you-cal"><option value="solar">양력</option><option value="lunar">음력</option></select></div>
         <div id="you-leapwrap" class="check"><input type="checkbox" id="you-leap"><label for="you-leap">윤달이에요</label></div>
         <div class="row" style="margin-top:8px"><select id="you-y" aria-label="년"></select><select id="you-m" aria-label="월"></select><select id="you-d" aria-label="일"></select></div>
+        <div class="ytype"><label for="you-yt">⌨️ 태어난 해 직접 쓰기</label><input id="you-yt" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="예: 1995"><span>년</span></div>
         <button type="submit" class="dark">궁합 보기</button>
         <p id="gh-err" class="err" role="alert"></p>
       </form>
