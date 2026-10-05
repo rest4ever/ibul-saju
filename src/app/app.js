@@ -224,11 +224,24 @@ function fillSelect(sel, from, to, suffix, def, placeholder) {
     sel.appendChild(o);
   }
 }
-function setupDate(prefix) {   // 10/5 사용자: 안 고르고 넘어가지면 안 됨 → 기본값 없이 '선택'부터
-  fillSelect($(`#${prefix}-y`), 1900, 2050, '년', null, '태어난 해');
+function setupDate(prefix) {   // 10/5 사용자: 안 고르고 넘어가지면 안 됨 → 월·일은 기본값 없이 '선택'부터
+  // 10/5 사용자: "1900년부터 올라가면 너무 힘들다, 중간인 1990년을 기본으로" → 해는 1990년이 골라진 채로 열리고 목록도 1990년 근처에서 시작
+  const y = $(`#${prefix}-y`);
+  fillSelect(y, 1900, 2050, '년', 1990, '태어난 해');
+  y.dataset.touched = '';
+  y.addEventListener('change', () => { y.dataset.touched = '1'; });
   fillSelect($(`#${prefix}-m`), 1, 12, '월', null, '월');
   fillSelect($(`#${prefix}-d`), 1, 31, '일', null, '일');
 }
+// 해를 안 건드리고 넘어가면 한 번만 "1990년 맞소?" 하고 확인 (기본값 그대로 잘못 보는 일 막기)
+function yearUnchecked(prefix) {
+  const y = $(`#${prefix}-y`);
+  if (y.dataset.touched || y.value !== '1990') return false;
+  y.dataset.touched = '1';
+  y.classList.add('ask'); setTimeout(() => y.classList.remove('ask'), 2400);
+  return true;
+}
+const YEAR_ASK = '태어난 해가 정말 <b>1990년</b>이오? 기본으로 골라 둔 해라 한 번 더 묻소. 맞으면 버튼을 한 번 더 누르시오!';
 
 function readDate(prefix) {
   if (!$(`#${prefix}-y`).value || !$(`#${prefix}-m`).value || !$(`#${prefix}-d`).value) throw new Error('태어난 해·달·날을 모두 골라 주시오. 하나라도 비면 사주를 세울 수 없소!');
@@ -662,6 +675,7 @@ function onGunghap(e) {
   if (!last) return;
   try {
     const dt = readDate('you');
+    if (yearUnchecked('you')) { $('#gh-err').innerHTML = YEAR_ASK; return; }
     const g = calculateFourPillars({year: dt.sy, month: dt.sm, day: dt.sd, hour: 12, minute: 0}).toObject();
     showGunghap(last.ilgan, g.day[0], '상대');
     $('#gh-result').scrollIntoView({behavior: 'smooth', block: 'start'});
@@ -930,6 +944,7 @@ window.addEventListener('DOMContentLoaded', () => {
     try {
       readDate('me');
       if (!sexPicked()) throw new Error('성별을 골라 주시오. 대운 방향과 연애·결혼운에 꼭 필요하오!');
+      if (yearUnchecked('me')) { $('#err2').innerHTML = YEAR_ASK; typeBubble('태어난 해가 정말 <b>1990년</b>이오?<br>맞으면 한 번 더 누르시오 🤔'); return; }
       goStep(3);
     } catch (err) { $('#err2').textContent = err.message; $('#bubble-text').textContent = err.message; }
   });
