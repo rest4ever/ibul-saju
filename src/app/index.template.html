@@ -117,6 +117,14 @@ footer b{color:#F6EFE0}
 
 .top{position:relative}.home-btn{z-index:3;position:absolute;left:0;top:50%;transform:translateY(-50%);width:auto;margin:0;padding:8px 13px;font-family:var(--body);font-weight:700;font-size:13px;border-radius:999px;background:#2A2650;color:#CFC6E8;box-shadow:none;border:1.5px solid #4A4478;min-height:36px}
 .rooms{display:flex;flex-direction:column;gap:10px}
+.enter-ask{text-align:center;animation:unfold .4s cubic-bezier(0,0,0,1)}
+.ea-ic{font-size:44px;line-height:1}
+.enter-ask h3{font-family:var(--title);font-weight:400;font-size:24px;margin:6px 0 10px;color:var(--ink)}
+.ea-need{list-style:none;margin:0 auto 4px;padding:12px 14px;background:#fff;border:2px solid #E6D9BE;border-radius:14px;text-align:left;font-size:15px;max-width:340px}
+.ea-need li{padding:3px 0}.ea-need li b{color:var(--bamboo)}
+.ea-btns{display:grid;grid-template-columns:1fr 1.6fr;gap:10px;margin-top:14px}
+.ea-btns button{margin:0}
+.ea-no{background:#fff;color:var(--ink);border:2px solid #D9CCB0;box-shadow:0 4px 0 #D9CCB0}
 .room{margin:0;text-align:left;padding:16px 18px;font-size:22px}
 .room small{display:block;font-family:var(--body);font-weight:400;font-size:13px;margin-top:3px;opacity:.85}
 #go-tarot{background:linear-gradient(180deg,#4A3B6E,#2A2650);color:var(--gold2);box-shadow:0 4px 0 #17143A;border:2px solid var(--gold)}
@@ -343,7 +351,13 @@ button.ghost-dark{background:transparent;color:var(--bamboo);box-shadow:none;bor
           <button type="button" class="room" id="start">📜 사주방<small>태어난 날·시간으로 보는 타고난 나, 2027년 운, 궁합</small></button>
           <button type="button" class="room" id="go-tarot">🃏 타로방<small>지금 마음속 질문 하나를 카드로 들여다보기</small></button>
         </div>
-        <p class="hint" style="text-align:center">둘 다 무료! 입력한 내용은 어디에도 저장 안 해요</p>
+        <div class="enter-ask" id="enter-ask" hidden>
+          <div class="ea-ic" id="ea-ic"></div>
+          <h3 id="ea-t"></h3>
+          <ul class="ea-need" id="ea-need"></ul>
+          <div class="ea-btns"><button type="button" class="ea-no" id="ask-no">아니오</button><button type="button" id="ask-yes">예, 들어갈래요</button></div>
+        </div>
+        <p class="hint" id="rooms-hint" style="text-align:center">둘 다 무료! 입력한 내용은 어디에도 저장 안 해요</p>
       </div>
 
       <div class="panel" data-step="10" hidden>

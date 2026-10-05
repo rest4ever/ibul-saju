@@ -4,7 +4,7 @@ URL='file:///home/claude/work/saju/site/index.html'
 CASES=[('1990','5','15','14','30','여성','c1'),('1985','11','3',None,None,'남성','c2'),('2001','2','4','8','0','비공개','c3')]
 async def run(pg, y,m,d,h,mi,sx,tag, shots):
     await pg.goto(URL); await pg.click('#door'); await pg.wait_for_timeout(1400)
-    await pg.click('#start'); await pg.click('.lv[data-lv="mid"]'); await pg.click('[data-step="1"] button.ghost')
+    await pg.click('#start'); await pg.click('#ask-yes'); await pg.click('.lv[data-lv="mid"]'); await pg.click('[data-step="1"] button.ghost')
     for s,v in [('#me-y',y),('#me-m',m),('#me-d',d)]: await pg.select_option(s,v)
     await pg.click(f'.seg.sex button:has-text("{sx}")'); await pg.click('#next2')
     if h is None: await pg.check('#me-hunk')

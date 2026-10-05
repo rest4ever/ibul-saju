@@ -2,7 +2,7 @@ import asyncio, json
 from playwright.async_api import async_playwright
 URL='file:///home/claude/work/saju/site/index.html'
 async def fill_me(pg, y, m, d, h=None, mi=0, lunar=False, nick=None):
-    await pg.click('#start'); await pg.click('.lv[data-lv="mid"]')
+    await pg.click('#start'); await pg.click('#ask-yes'); await pg.click('.lv[data-lv="mid"]')
     if nick: await pg.fill('#nick', nick); await pg.click('[data-step="1"] button.next:not(.ghost)')
     else: await pg.click('[data-step="1"] button.ghost')
     if lunar: await pg.click('.seg button[data-cal="lunar"]')
@@ -19,7 +19,7 @@ async def main():
         out={}
         await pg.goto(URL); await pg.click('#door'); await pg.wait_for_timeout(1400)
         await pg.screenshot(path='f_step0.png')
-        await pg.click('#start'); await pg.click('.lv[data-lv="mid"]'); await pg.wait_for_timeout(200); await pg.screenshot(path='f_step1.png')
+        await pg.click('#start'); await pg.click('#ask-yes'); await pg.click('.lv[data-lv="mid"]'); await pg.wait_for_timeout(200); await pg.screenshot(path='f_step1.png')
         await pg.fill('#nick','쉬고싶은청년'); await pg.click('[data-step="1"] button.next:not(.ghost)'); await pg.wait_for_timeout(200)
         out['b2']=await pg.get_attribute('#bubble-text','data-full')
         await pg.select_option('#me-m','2'); await pg.select_option('#me-d','30'); await pg.click('.seg.sex button:has-text("여성")'); await pg.click('#next2'); await pg.wait_for_timeout(150)
@@ -52,7 +52,7 @@ async def main():
         await (await dl.value).save_as('c_gh.png')
         # 음력·윤달 오류
         pg3=await ctx.new_page(); await pg3.goto(URL); await pg3.click('#door'); await pg3.wait_for_timeout(1400)
-        await pg3.click('#start'); await pg3.click('.lv[data-lv="mid"]'); await pg3.click('[data-step="1"] button.ghost'); await pg3.click('.seg button[data-cal="lunar"]')
+        await pg3.click('#start'); await pg3.click('#ask-yes'); await pg3.click('.lv[data-lv="mid"]'); await pg3.click('[data-step="1"] button.ghost'); await pg3.click('.seg button[data-cal="lunar"]')
         out['leap_visible']=await pg3.is_visible('#me-leap')
         await pg3.check('#me-leap'); await pg3.select_option('#me-y','1990'); await pg3.select_option('#me-m','1'); await pg3.select_option('#me-d','1'); await pg3.click('.seg.sex button:has-text("여성")'); await pg3.click('#next2'); await pg3.wait_for_timeout(150)
         out['leap_err']=await pg3.inner_text('#err2')

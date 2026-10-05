@@ -9,7 +9,7 @@ async def main():
         out={}
         # 처음이에요 흐름
         await pg.goto(URL); await pg.click('#door'); await pg.wait_for_timeout(1400)
-        await pg.click('#start'); await pg.wait_for_timeout(300); await pg.screenshot(path='lv_10.png'); out['b10']=await pg.get_attribute('#bubble-text','data-full')
+        await pg.click('#start'); await pg.click('#ask-yes'); await pg.wait_for_timeout(300); await pg.screenshot(path='lv_10.png'); out['b10']=await pg.get_attribute('#bubble-text','data-full')
         await pg.click('.lv[data-lv="new"]')
         for n in (11,12,13,14,15,16):
             await pg.wait_for_timeout(550); await pg.screenshot(path=f'lv_{n}.png'); out[f'b{n}']=await pg.get_attribute('#bubble-text','data-full')
@@ -36,7 +36,7 @@ async def main():
         await pg.screenshot(path='lv_result_new.png', full_page=True)
         # 잘 알아요 흐름: 십신 표시
         await pg.goto(URL+'?x'); await pg.click('#door'); await pg.wait_for_timeout(1400)
-        await pg.click('#start'); await pg.click('.lv[data-lv="pro"]'); await pg.click('[data-step="1"] button.ghost')
+        await pg.click('#start'); await pg.click('#ask-yes'); await pg.click('.lv[data-lv="pro"]'); await pg.click('[data-step="1"] button.ghost')
         for s,v in [('#me-y','1990'),('#me-m','5'),('#me-d','15')]: await pg.select_option(s,v)
         await pg.click('.seg.sex button:has-text("여성")'); await pg.click('#next2'); await pg.select_option('#me-h','14'); await pg.click('#go'); await pg.wait_for_timeout(9500)
         out['chart_pro']=(await pg.inner_text('#chart')).replace('\n',' ')

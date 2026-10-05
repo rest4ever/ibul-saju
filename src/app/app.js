@@ -871,8 +871,31 @@ window.addEventListener('DOMContentLoaded', () => {
   $('#you-cal').addEventListener('change', () => setCal('you', $('#you-cal').value));
   setCal('you', 'solar');
 
-  $('#start').addEventListener('click', () => goStep(10));
-  $('#go-tarot').addEventListener('click', () => { enterTarot(); goStep(30); });
+  // 10/5 사용자: "고르면 바로 들어가지 말고 '사주방에 입장하시겠소?' 묻고 예/아니오로"
+  const ROOM_ASK = {
+    saju: {ic: '📜', t: '사주방에 들어가겠소?', key: 'ask_saju', bub: '사주방에 들어가겠소?<br>태어난 날과 시간으로 그대 팔자를 펼쳐 볼 거요 📜',
+      need: ['<b>준비할 것</b> 태어난 해·달·날, 태어난 시간(몰라도 돼요), 성별', '<b>볼 수 있는 것</b> 타고난 성격, 2027년 운, 달별 운, 궁합', '<b>처음이면</b> 사주가 뭔지부터 차근차근 알려 드려요']},
+    tarot: {ic: '🃏', t: '타로방에 들어가겠소?', key: 'ask_tarot', bub: '타로방에 들어가겠소?<br>고민 하나를 떠올리고, 카드로 같이 들여다볼 거요 🃏',
+      need: ['<b>준비할 것</b> 마음속 고민이나 질문 하나', '<b>하는 것</b> 카드 섞기 → 고르기 → 도령과 한 장씩 상담', '<b>처음이면</b> 타로가 뭔지부터 알려 드려요']},
+  };
+  let askRoom = null;
+  const showAsk = (room) => {
+    askRoom = room; const A = ROOM_ASK[room];
+    $('.rooms').hidden = true; $('#rooms-hint').hidden = true; $('#enter-ask').hidden = false;
+    $('#ea-ic').textContent = A.ic; $('#ea-t').textContent = A.t;
+    $('#ea-need').innerHTML = A.need.map((x) => `<li>${x}</li>`).join('');
+    typeBubble(A.bub, say('', $('.scene'), A.key));
+    $('#ask-yes').focus({preventScroll: true});
+    setTimeout(() => $('.ea-btns').scrollIntoView({behavior: reduceMotion() ? 'auto' : 'smooth', block: 'center'}), 60);   // 떠 있는 목소리 버튼에 예/아니오가 가리지 않게
+  };
+  const hideAsk = () => { askRoom = null; $('.rooms').hidden = false; $('#rooms-hint').hidden = false; $('#enter-ask').hidden = true; };
+  $('#start').addEventListener('click', () => showAsk('saju'));
+  $('#go-tarot').addEventListener('click', () => showAsk('tarot'));
+  $('#ask-yes').addEventListener('click', () => {
+    const r = askRoom; hideAsk();
+    if (r === 'tarot') { enterTarot(); goStep(30); } else goStep(10);
+  });
+  $('#ask-no').addEventListener('click', () => { hideAsk(); typeBubble('알겠소! 천천히 골라 보시오~ 🍵', say('', $('.scene'), 'ask_no')); });
   $('#t-to-saju').addEventListener('click', () => goStep(10));
   $('#home-btn').addEventListener('click', () => { stopTalk(); chMax = 1; $('#result').hidden = true; $('#stage').hidden = false; goStep(0); window.scrollTo({top: 0}); });
   initTarot(goStep, (t) => { typeBubble(t); }, ART.face);
@@ -931,7 +954,7 @@ window.addEventListener('DOMContentLoaded', () => {
     door.classList.add('open');
     setTimeout(() => {
       goStep(0);
-      if (location.hash === '#tarot') $('#go-tarot').click();
+      if (location.hash === '#tarot') { enterTarot(); goStep(30); }   // 타로방 바로가기 링크는 묻지 않고 들어간다
     }, reduceMotion() ? 0 : 450);
     setTimeout(() => door.classList.add('gone'), reduceMotion() ? 0 : 1200);
   };
