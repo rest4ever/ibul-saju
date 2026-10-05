@@ -1,7 +1,8 @@
 import {calculateFourPillars, lunarToSolar} from 'manseryeok';   // 10/5 엔진 교체: 절입 '시각' 기준 (이전 라이브러리는 날짜 0시 기준이라 절기 날 일부가 틀렸음)
 import * as AN from './analysis.js';
 import * as TD from './texts_detail.js';
-import {initTarot} from './tarot.js';
+import {initTarot, enterTarot, tarotBubble} from './tarot.js';
+import {markTerms, initGloss} from './glossary.js';
 import {ILGAN, YEAR2027, EL, GUNGHAP, AREA2027, SPOUSE2027} from './texts.js';
 import {ART} from './art.js';
 
@@ -13,7 +14,7 @@ const ORDER = ['목', '화', '토', '금', '수'];
 const GEN = {목: '화', 화: '토', 토: '금', 금: '수', 수: '목'}; // 생(生)
 const CTRL = {목: '토', 토: '수', 수: '화', 화: '금', 금: '목'}; // 극(剋)
 const HAP = [['갑', '기'], ['을', '경'], ['병', '신'], ['정', '임'], ['무', '계']];
-const SITE = '이불 속 사주방';
+const SITE = '도령의 고민 상담소';
 const YANG = new Set(['갑', '병', '무', '경', '임']);
 const BRANCH_MAIN = AN.BRANCH_MAIN;
 const sipsin = AN.sipsin;
@@ -34,8 +35,19 @@ const REL_EASY = {
   편인: '남다른 생각과 촉, 혼자 깊이 파는 공부', 정인: '나를 도와주고 키워주는 기운, 공부·문서·어른',
 };
 let LV = 'mid';   // 사주 아는 정도: new 처음 / mid 조금 / pro 잘 앎 (10/5 사용자 제안)
-const ART_IDX = {0: 0, 10: 1, 11: 4, 12: 2, 13: 4, 14: 2, 1: 1, 2: 2, 3: 1, 4: 4};   // 0 인사 1 질문 2 등불 4 사주책
-const DOT_IDX = {0: 0, 10: 0, 11: 0, 12: 0, 13: 0, 14: 0, 1: 1, 2: 2, 3: 3, 4: 3};
+const ART_IDX = {0: 0, 10: 1, 11: 4, 12: 2, 13: 4, 14: 2, 15: 4, 16: 2, 1: 1, 2: 2, 3: 1, 4: 4, 30: 0, 31: 4, 32: 2, 33: 1, 34: 0, 35: 2, 36: 4, 37: 1, 38: 2};   // 0 인사 1 질문 2 등불 4 사주책
+const DOT_IDX = {0: 0, 10: 0, 11: 0, 12: 0, 13: 0, 14: 0, 15: 0, 16: 0, 1: 1, 2: 2, 3: 3, 4: 3};
+// 처음 설명 컷이 6개로 늘면서(10/5 사용자: "사주가 어떻게 시작된 건지") 기존 녹음 step11~14 → 13~16번 컷에 씀. 11·12번 컷은 아직 녹음 없음
+const AUDIO_OF = {0: null, 11: null, 12: null, 13: 'step11', 14: 'step12', 15: 'step13', 16: 'step14', 30: null, 31: null, 32: null, 33: null, 34: null, 35: null, 36: null, 37: null, 38: null};   // 0번(상담소 인사)·타로는 새로 녹음 전
+const EASY_SS = {비견: '나와 같은 편', 겁재: '경쟁자', 식신: '재주', 상관: '표현', 편재: '큰돈', 정재: '월급·저축', 편관: '압박·도전', 정관: '직장·명예', 편인: '촉·공부', 정인: '도움·문서'};
+// 도령 입·눈 위치 (그림 640×640 기준, 10/5 그림에서 잰 값). 0 인사 1 질문 2 등불 4 사주책
+const FX = {
+  0: {m: [317, 270, 34, 20]},
+  1: {m: [320, 276, 22, 18], e: [[286, 241, 13, '#F0D3C6'], [352, 241, 13, '#F6D9CC']]},
+  2: {m: [320, 284, 64, 34], e: [[291, 241, 12, '#FBDCC4'], [350, 241, 12, '#F9D7A6']]},
+  3: {m: [320, 276, 22, 18], e: [[286, 241, 13, '#F0D3C6'], [352, 241, 13, '#F6D9CC']]},
+  4: {m: [317, 270, 30, 18], e: [[282, 255, 13, '#FDDCB8'], [351, 255, 13, '#FDDAB4']]},
+};
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => Array.from(document.querySelectorAll(s));
@@ -54,7 +66,8 @@ function readInvite() {
   return {g, n: clean(q.get('n')) || '친구'};
 }
 
-function sex() { const b = document.querySelector('.seg.sex button.on'); return b ? b.dataset.sex : ''; }
+function sexPicked() { return !!document.querySelector('.seg.sex button.on'); }
+function sex() { const b = document.querySelector('.seg.sex button.on'); return b && b.dataset.sex !== '-' ? b.dataset.sex : ''; }
 function nick() { return clean($('#nick').value) || ''; }
 function callName() { return nick() ? `${nick()}님은` : '그대는'; }   // 받침 상관없이 자연스럽게
 
@@ -79,19 +92,22 @@ function stopTalk() {
   try { if ('speechSynthesis' in window) speechSynthesis.cancel(); } catch (e) { /* 무시 */ }
   if (voice.audio) { voice.audio.pause(); voice.audio = null; }
   $$('.talking').forEach((el) => el.classList.remove('talking'));
+  talkFlags.audio = false;
 }
 function say(text, el, key) {
-  if (!voice.on) return;
+  if (!voice.on) return null;
   stopTalk();
   const target = el || $('.scene');
-  const done = () => target.classList.remove('talking');
+  const isScene = target === $('.scene');
+  const on = () => (isScene ? setTalk('audio', true) : target.classList.add('talking'));
+  const done = () => (isScene ? setTalk('audio', false) : target.classList.remove('talking'));
   if (key && RECORDED[key]) {
     const au = new Audio(RECORDED[key]);
-    voice.audio = au; au.onplay = () => target.classList.add('talking'); au.onended = done; au.onerror = done;
-    au.play().catch(done);
-    return;
+    voice.audio = au; au.onplay = on; au.onended = done; au.onerror = () => { done(); au.dispatchEvent(new Event('nogo')); };
+    au.play().catch(() => { done(); au.dispatchEvent(new Event('nogo')); });
+    return au;
   }
-  // 녹음이 없는 말은 소리 없이 넘어간다
+  return null;   // 녹음이 없는 말은 소리 없이 넘어간다
 }
 function setVoice(on) {
   voice.on = on;
@@ -106,18 +122,77 @@ function readOut(parts, el) {   // 버튼을 누르면 목소리가 꺼져 있�
   say(parts.filter(Boolean).join('. '), el);
 }
 
+// ---------- 도령 움직임: 입 벙긋 + 눈 깜빡 + 말풍선 타자 (10/5 사용자: "입이 움직이던가 몸도 움직이면서") ----------
+const talkFlags = {type: false, audio: false};
+function setTalk(k, v) {
+  talkFlags[k] = v;
+  $('.scene').classList.toggle('talking', talkFlags.type || talkFlags.audio);
+}
+function drawFx(ai) {
+  const f = FX[ai] || FX[0];
+  const [x, y, w, h] = f.m;
+  let s = `<g class="mouth"><g class="jaw"><ellipse cx="${x}" cy="${y}" rx="${w / 2}" ry="${h / 2}" fill="#5A1E22" stroke="#2B2522" stroke-width="3"/><ellipse cx="${x}" cy="${y + h * 0.22}" rx="${w * 0.3}" ry="${h * 0.2}" fill="#E8808A"/></g></g>`;
+  if (f.e) s += `<g class="lids">${f.e.map(([ex, ey, r, c]) => `<ellipse cx="${ex}" cy="${ey}" rx="${r + 2}" ry="${r + 1}" fill="${c}"/><path d="M${ex - r} ${ey} Q${ex} ${ey + r * 0.7} ${ex + r} ${ey}" stroke="#2B2522" stroke-width="3.5" fill="none" stroke-linecap="round"/>`).join('')}</g>`;
+  $('#fx').innerHTML = s;
+}
+const reduceMotion = () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function startBlink() {
+  const tick = () => {
+    setTimeout(() => {
+      const fx = $('#fx');
+      if (fx && !reduceMotion()) { fx.classList.add('blink'); setTimeout(() => fx.classList.remove('blink'), 140); }
+      tick();
+    }, 2400 + Math.random() * 2800);
+  };
+  tick();
+}
+let twTimer = null, twId = 0;
+// 10/5 사용자: "자막이 먼저 나온다" → 녹음이 있으면 소리가 실제로 나기 시작할 때 타자를 시작하고, 녹음 길이에 맞춰 속도를 맞춘다
+function typeBubble(html, au) {
+  const el = $('#bubble-text');
+  el.dataset.full = html;
+  clearInterval(twTimer);
+  const id = ++twId;
+  const plain = [...html.replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]*>/g, '')];
+  if (reduceMotion()) { el.innerHTML = html; return; }
+  el.textContent = '';
+  const run = (ms) => {
+    if (id !== twId) return;
+    let i = 0;
+    setTalk('type', true);
+    twTimer = setInterval(() => {
+      i += 1;
+      el.textContent = plain.slice(0, i).join('');
+      if (i >= plain.length) { clearInterval(twTimer); el.innerHTML = html; setTalk('type', false); }
+    }, ms);
+  };
+  if (!au) { run(42); return; }
+  let started = false;
+  const go = () => {
+    if (started) return; started = true; clearTimeout(fb);
+    const d = au.duration;
+    run(isFinite(d) && d > 0 ? Math.max(28, Math.min(150, (d * 1000 * 0.92) / plain.length)) : 42);
+  };
+  const fb = setTimeout(go, 1800);   // 소리가 늦거나 막히면 그냥 시작
+  au.addEventListener('playing', go, {once: true});
+  au.addEventListener('nogo', go, {once: true});
+}
+
 // ---------- 웹툰 단계 ----------
 function bubbleFor(n) {   // 도령 말투: 살짝 사극투 (10/5 사용자 선택)
   if (n === 0) {
     return inviter
       ? `<b>${inviter.n}</b>님이 궁합 보자고 링크를 보냈구려 💌<br>생일만 알려 주면 바로 봐 드리리다!`
-      : '어서 오시오~ 여기는 <b>이불 속 사주방</b>이오 🌙<br>누운 채로 편하게, 사주 한번 펼쳐 보겠소?';
+      : '어서 오시오~ <b>도령의 고민 상담소</b>에 잘 왔소 🏮<br>무슨 고민이 있어 왔소? 사주로 볼까, 타로로 볼까?';
   }
+  if (n >= 30) return tarotBubble(n);
   if (n === 10) return '그대, 사주는 좀 아시오?';
-  if (n === 11) return '좋소! 사주가 뭔지부터 차근차근 알려 드리리다 📜';
-  if (n === 12) return '글자마다 기운이 있소. 딱 다섯 가지요!';
-  if (n === 13) return "여덟 글자 중에 제일 중요한 건<br>바로 <b>'나'</b>를 뜻하는 글자요 ☝️";
-  if (n === 14) return '마지막이오! 운세는 이렇게 보는 거요 🔮';
+  if (n === 11) return '좋소! 먼저 사주가 어디서 왔는지<br>옛날이야기부터 들려 드리리다 📜';
+  if (n === 12) return '조선에선 사주가 나랏일이기도 했소! 📜';
+  if (n === 13) return '이제 사주가 뭔지 보겠소.<br>네 기둥, 여덟 글자요!';
+  if (n === 14) return '글자마다 기운이 있소. 딱 다섯 가지요!';
+  if (n === 15) return "여덟 글자 중에 제일 중요한 건<br>바로 <b>'나'</b>를 뜻하는 글자요 ☝️";
+  if (n === 16) return '마지막이오! 운세는 이렇게 보는 거요 🔮';
   if (n === 1) return '먼저, 뭐라고 불러 드리면 되겠소?';
   if (n === 2) return `${callName()} 언제 태어났소?`;
   if (n === 3) return '태어난 시간도 아시오?<br>몰라도 괜찮소~';
@@ -126,17 +201,22 @@ function bubbleFor(n) {   // 도령 말투: 살짝 사극투 (10/5 사용자 선
 let stepNow = 0;
 function goStep(n) {
   stepNow = n;
+  const room = n === 0 ? 'home' : n >= 30 ? 'tarot' : 'saju';
+  document.body.classList.toggle('room-tarot', room === 'tarot');
+  $('#top-title').textContent = room === 'home' ? '🏮 도령의 고민 상담소' : room === 'tarot' ? '🃏 도령의 타로방' : '📜 도령의 사주방';
+  $('#home-btn').hidden = room === 'home';
   $$('.panel').forEach((p) => { p.hidden = +p.dataset.step !== n; });
-  $('#bubble-text').innerHTML = bubbleFor(n);
+  const au = say(bubbleFor(n), $('.scene'), n === 0 && inviter ? null : (n in AUDIO_OF ? AUDIO_OF[n] : 'step' + n));
+  typeBubble(bubbleFor(n), au);
   const bub = $('.bubble'); bub.classList.remove('pop'); void bub.offsetWidth; bub.classList.add('pop');
-  say(bubbleFor(n), $('.scene'), n === 0 && inviter ? null : 'step' + n);
-  const art = $('#art'); const nextSrc = ART.steps[ART_IDX[n] ?? 0];
-  if (art.getAttribute('src') !== nextSrc) { art.src = nextSrc; art.classList.remove('hop'); void art.offsetWidth; art.classList.add('hop'); }
+  const art = $('#art'); const ai = ART_IDX[n] ?? 0; const nextSrc = ART.steps[ai];
+  if (art.getAttribute('src') !== nextSrc) { art.src = nextSrc; drawFx(ai); const rig = $('#rig'); rig.classList.remove('hop'); void rig.offsetWidth; rig.classList.add('hop'); }
   $$('.dots i').forEach((d, i) => d.classList.toggle('on', i === (DOT_IDX[n] ?? 0)));
 }
 
-function fillSelect(sel, from, to, suffix, def) {
+function fillSelect(sel, from, to, suffix, def, placeholder) {
   sel.innerHTML = '';
+  if (placeholder) { const o = document.createElement('option'); o.value = ''; o.textContent = placeholder; o.selected = true; sel.appendChild(o); }
   for (let v = from; v <= to; v++) {
     const o = document.createElement('option');
     o.value = v; o.textContent = v + suffix;
@@ -144,13 +224,14 @@ function fillSelect(sel, from, to, suffix, def) {
     sel.appendChild(o);
   }
 }
-function setupDate(prefix, defYear) {
-  fillSelect($(`#${prefix}-y`), 1900, 2050, '년', defYear);
-  fillSelect($(`#${prefix}-m`), 1, 12, '월', 1);
-  fillSelect($(`#${prefix}-d`), 1, 31, '일', 1);
+function setupDate(prefix) {   // 10/5 사용자: 안 고르고 넘어가지면 안 됨 → 기본값 없이 '선택'부터
+  fillSelect($(`#${prefix}-y`), 1900, 2050, '년', null, '태어난 해');
+  fillSelect($(`#${prefix}-m`), 1, 12, '월', null, '월');
+  fillSelect($(`#${prefix}-d`), 1, 31, '일', null, '일');
 }
 
 function readDate(prefix) {
+  if (!$(`#${prefix}-y`).value || !$(`#${prefix}-m`).value || !$(`#${prefix}-d`).value) throw new Error('태어난 해·달·날을 모두 골라 주시오. 하나라도 비면 사주를 세울 수 없소!');
   const y = +$(`#${prefix}-y`).value, m = +$(`#${prefix}-m`).value, d = +$(`#${prefix}-d`).value;
   const lunar = $(`#${prefix}-cal`).value === 'lunar';
   const leap = lunar && $(`#${prefix}-leap`).checked;
@@ -205,7 +286,7 @@ function relation(me, other) {
 function cell(ch, kind, ilgan, isMe) {
   const el = kind === 'stem' ? STEM_EL[ch] : BRANCH_EL[ch];
   let ss = '';
-  if (ilgan) ss = `<em>${isMe ? '일간' : sipsin(ilgan, kind === 'stem' ? ch : BRANCH_MAIN[ch])}</em>`;
+  if (ilgan) { const s = isMe ? '일간' : sipsin(ilgan, kind === 'stem' ? ch : BRANCH_MAIN[ch]); ss = `<em class="ss">${s}</em><em class="easy">${isMe ? '나' : EASY_SS[s]}</em>`; }
   return `<div class="cell ${kind}" style="--c:${EL[el].color}"><b>${ch}</b><small>${EL[el].label}</small>${ss}</div>`;
 }
 
@@ -298,6 +379,8 @@ function render(p, dt) {
   if (inviter) showGunghap(ilgan, inviter.g, inviter.n);
   $('#stage').hidden = true;
   $('#result').hidden = false;
+  markTerms($('#result'));
+  $('#home-btn').hidden = false;
   showChap(1);
   window.scrollTo({top: 0, behavior: 'smooth'});
   say('', $$('.chap[data-ch="1"] .talk .face')[0], 'ch1');
@@ -321,6 +404,13 @@ function renderDetail(p, dt) {
   $('#hidden-tbl').innerHTML = `<table class="htbl"><tr><th></th>${cols.map(([l]) => `<th>${l}주</th>`).join('')}</tr>
     <tr><th>지장간</th>${cols.map(([, v]) => `<td>${AN.JIJANG[v[1]].map(([s, n]) => `${s}${n}`).join(' ')}</td>`).join('')}</tr>
     <tr><th>12운성</th>${cols.map(([, v]) => `<td>${AN.unseong(me, v[1])}</td>`).join('')}</tr></table>`;
+  // 격국 (월지 기준 정격: 월지 지장간 중 천간에 드러난 것을 정기→중기→초기 순서로, 없으면 정기) — 이 사이트 기준
+  const stemsOut = [p.year[0], p.month[0], p.hour ? p.hour[0] : null].filter(Boolean);
+  const jj = AN.JIJANG[p.month[1]].map(([s]) => s).reverse();
+  const tou = jj.find((s) => stemsOut.includes(s));
+  let gk = sipsin(me, tou || jj[0]);
+  gk = gk === '비견' ? '건록격' : gk === '겁재' ? '양인격' : gk + '격';
+  $('#pro-gyeok').textContent = `격국: ${gk} — 월지 ${p.month[1]}(${AN.HANJA_B[p.month[1]]})의 지장간 ${AN.JIJANG[p.month[1]].map(([s]) => s).join('·')} 중 ${tou ? `천간에 드러난 ${tou}` : `정기 ${jj[0]}`} 기준 (월지 정격 판단, 학파마다 다를 수 있음). 일간 ${me}(${AN.HANJA_S[me]}) · 공망 ${(p.voids || []).join('·') || '-'}.`;
   // 신강·신약
   const ST = TD.STRENGTH_TEXT[A.strength];
   $('#str-badge').textContent = `${A.strength} · ${A.score}점`;
@@ -446,7 +536,7 @@ function renderDaeun(p, dt) {
     <div class="dw">${L.pillars.slice(0, 9).map((x, i) => {
       const s = sipsin(me, x.korean[0]);
       const r = A ? AN.elRole(A, AN.STEM_EL[x.korean[0]]) : 'han';
-      return `<div class="${i === nowI ? 'now' : ''}"><small>${x.age}세~</small><b>${x.korean}</b>${s}<br><small>${ROLE_NAME[r]}</small></div>`;
+      return `<div class="${i === nowI ? 'now' : ''}"><small>${x.age}세~</small><b>${x.korean}</b><span class="only-pro">${s}<br><small>${ROLE_NAME[r]}</small></span></div>`;
     }).join('')}</div>
     ${nowI >= 0 ? (() => { const x = L.pillars[nowI], s = sipsin(me, x.korean[0]), T = TD.DAEUN_TEXT[s], r = AN.elRole(A, AN.STEM_EL[x.korean[0]]); return `<div class="gtx"><div class="area-t">지금은 ${T[0]}</div><p>${x.age}세부터 10년은 ${x.korean} 대운, ${T[1]}예요. 이 대운의 하늘 글자는 그대에게 ${ROLE_NAME[r]}(${ROLE_EASY[r]})이라 ${r === 'yong' || r === 'hee' ? '힘을 받는 10년이에요. 이때 벌인 일이 오래 가요.' : r === 'gi' || r === 'gu' ? '버티면서 실력을 쌓는 10년이에요. 무리한 확장보다 내실!' : '큰 굴곡 없이 흘러가는 10년이에요.'}</p></div>`; })() : ''}
     ${nowI + 1 < L.pillars.length && nowI >= 0 ? `<p class="note">다음 대운: ${L.pillars[nowI + 1].age}세부터 ${L.pillars[nowI + 1].korean} (${TD.DAEUN_TEXT[sipsin(me, L.pillars[nowI + 1].korean[0])][0]})</p>` : ''}`;
@@ -472,7 +562,7 @@ function renderMonths(p, A) {
     if (rel && TD.MONTH_REL[rel]) lines.push(TD.MONTH_REL[rel]);
     if (AN.stemHap(m[0], me)) lines.push('그 달 하늘 글자가 나(일간)와 합을 이뤄요. 끌리는 제안이나 사람이 생기기 쉬워요.');
     const s = scores[i];
-    return `<details class="mcard" id="m${i}" ${i === best ? 'open' : ''}><summary><span><b>${i + 1}월 · ${T[0]}</b><br><small>${ranges[i]} · ${m}(${AN.HANJA_S[m[0]]}${AN.HANJA_B[m[1]]})월 · ${sS}/${sB}</small></span><span class="sc" style="--c:${color(s)}">${s}점</span></summary>${lines.map((x) => `<p>${x}</p>`).join('')}${i === best ? '<p class="xtra">★ 2027년 중 그대에게 가장 좋은 달이에요. 중요한 시작은 이 달에!</p>' : ''}</details>`;
+    return `<details class="mcard" id="m${i}" ${i === best ? 'open' : ''}><summary><span><b>${i + 1}월 · ${T[0]}</b><br><small>${ranges[i]}<span class="only-pro"> · ${m}(${AN.HANJA_S[m[0]]}${AN.HANJA_B[m[1]]})월 · ${sS}/${sB}</span></small></span><span class="sc" style="--c:${color(s)}">${s}점</span></summary>${lines.map((x) => `<p>${x}</p>`).join('')}${i === best ? '<p class="xtra">★ 2027년 중 그대에게 가장 좋은 달이에요. 중요한 시작은 이 달에!</p>' : ''}</details>`;
   }).join('');
   const worst = scores.indexOf(Math.min(...scores));
   $('#month-sum').innerHTML = `가장 좋은 달은 <b>${best + 1}월</b>, 숨 고를 달은 <b>${worst + 1}월</b>이에요.`;
@@ -487,9 +577,12 @@ function showChap(n) {
   $('#toc').innerHTML = $$('.chap').map((c) => `<button type="button" data-go="${c.dataset.ch}" class="${+c.dataset.ch === n ? 'on' : ''}" ${+c.dataset.ch > chMax ? 'disabled' : ''}>${+c.dataset.ch > chMax ? '🔒' : c.dataset.ch + '장'} ${c.dataset.t}</button>`).join('');
   $$('#toc button').forEach((b) => b.addEventListener('click', () => { showChap(+b.dataset.go); window.scrollTo({top: 0, behavior: 'smooth'}); }));
   $('#ch-prev').hidden = n === 1;
+  $('#ch-prev').textContent = '← 이전';
   const nx = $$('.chap').find((c) => +c.dataset.ch === n + 1);
-  $('#ch-next').hidden = n === CH_N;
-  if (nx) $('#ch-next').textContent = `${n + 1}장 넘기기 → ${nx.dataset.t}`;
+  if (nx) $('#ch-next').innerHTML = `<small>다음 · ${n + 1}장</small><span>${nx.dataset.t} →</span>`;
+  $('.chap-nav').classList.toggle('first', n === 1);
+  if (n === CH_N) $('#ch-next').innerHTML = '<small>9장까지 다 봤소!</small><span>🏠 상담소로 →</span>';
+  $('#ch-bar').style.width = (n / CH_N * 100) + '%';
   $('#ch-count').textContent = `${n} / ${CH_N}장`;
   const face = $(`.chap[data-ch="${n}"] .talk .face`);
   if (last && n > 1) say('', face, n === 2 ? IL_KEY[last.ilgan] : 'ch' + n);
@@ -525,23 +618,38 @@ function onSubmit(e) {
   try {
     dt = readDate('me');
     const unknown = $('#me-hunk').checked;
+    if (!unknown && $('#me-h').value === '') throw new Error('태어난 시간을 고르거나, 모르면 "태어난 시간 몰라요"를 체크해 주시오.');
     h = unknown ? null : +$('#me-h').value;
     mi = unknown ? 0 : +$('#me-mi').value;
   } catch (err) {
     $('#err').textContent = /[가-힣]/.test(err.message || '') ? err.message : '계산하지 못했어요. 입력을 확인해 주세요.';
     return;
   }
+  // 10/5 사용자: "바로 결과 나오지 말고 버퍼 좀 있다가 '어디 보자~~' 하면서" → 계산은 먼저 해 두고, 도령이 살펴보는 연출 뒤에 보여 준다
+  let P;
+  try {
+    lastIn = {dt, h, mi, corr: $('#me-corr').checked};
+    P = pillarsOf(dt, h, mi, $('#me-corr').checked, sex());
+  } catch (err) {
+    $('#err').textContent = '계산하지 못했어요. 입력을 확인해 주세요.';
+    return;
+  }
   goStep(4);
-  const wait = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 900;
-  setTimeout(() => {
-    try {
-      lastIn = {dt, h, mi, corr: $('#me-corr').checked};
-      render(pillarsOf(dt, h, mi, $('#me-corr').checked, sex()), dt);
-    } catch (err) {
-      goStep(3);
-      $('#err').textContent = '계산하지 못했어요. 입력을 확인해 주세요.';
-    }
-  }, wait);
+  const lis = $$('#load-steps li');
+  lis.forEach((li) => li.classList.remove('on', 'now'));
+  const quick = reduceMotion();
+  const lines = [`어디 보자~~ 🔍<br>${nick() ? nick() + '님' : '그대'}의 여덟 글자를 펼쳐 보겠소`, '음… 다섯 기운이 어디로 쏠렸나…<br>잠깐만 기다리시오 🤔', '오호, 이건…! ✨<br>재밌는 사주구려!'];
+  const T0 = quick ? 0 : 1;
+  const plan = [[0, () => { typeBubble(lines[0]); lis[0] && lis[0].classList.add('now'); }],
+    [1100, () => { lis[0] && lis[0].classList.replace('now', 'on'); lis[1] && lis[1].classList.add('now'); }],
+    [1900, () => { typeBubble(lines[1]); lis[1] && lis[1].classList.replace('now', 'on'); lis[2] && lis[2].classList.add('now'); }],
+    [3000, () => { lis[2] && lis[2].classList.replace('now', 'on'); lis[3] && lis[3].classList.add('now'); }],
+    [3700, () => { typeBubble(lines[2]); lis[3] && lis[3].classList.replace('now', 'on'); const r = $('#rig'); r.classList.remove('hop'); void r.offsetWidth; r.classList.add('hop'); }],
+    [4900, () => {
+      if (stepNow !== 4) return;
+      try { render(P, dt); } catch (err) { goStep(3); $('#err').textContent = '계산하지 못했어요. 입력을 확인해 주세요.'; }
+    }]];
+  plan.forEach(([ms, fn]) => setTimeout(fn, ms * T0));
 }
 
 function onGunghap(e) {
@@ -666,7 +774,7 @@ async function makeGh() {
   g.fillStyle = HANJI; roundRect(g, 70, 770, W - 140, 400, 40); g.fill();
   g.fillStyle = INK; g.font = `38px ${BF}`;
   wrap(g, r.text, W / 2, 850, W - 220, 62, 5);
-  g.fillStyle = GOLD2; g.font = `34px ${TF}`; g.fillText('너랑 나는? 이불 속 사주방에서 확인 💌', W / 2, 1235);
+  g.fillStyle = GOLD2; g.font = `34px ${TF}`; g.fillText('너랑 나는? 도령의 고민 상담소에서 확인 💌', W / 2, 1235);
   foot(g);
   return toBlob(c);
 }
@@ -691,7 +799,7 @@ async function onMakeLink() {
   if (!last) return;
   const n = nick() || '친구';
   const url = location.origin + location.pathname + '#g=' + encodeURIComponent(last.ilgan) + '&n=' + encodeURIComponent(n);
-  const text = `[${n}] 이불 속 사주방에서 우리 궁합 볼래? 생일만 넣으면 바로 나와 💌`;
+  const text = `[${n}] 도령의 고민 상담소에서 우리 궁합 볼래? 생일만 넣으면 바로 나와 💌`;
   try {
     if (navigator.share) { await navigator.share({title: SITE, text, url}); $('#link-msg').textContent = '보냈어요! 친구 답장 기다리기 💌'; return; }
   } catch (e) { if (e && e.name === 'AbortError') return; }
@@ -710,9 +818,9 @@ function setCal(prefix, v) {
 
 window.addEventListener('DOMContentLoaded', () => {
   inviter = readInvite();
-  setupDate('me', 1997);
-  setupDate('you', 1997);
-  fillSelect($('#me-h'), 0, 23, '시', 12);
+  setupDate('me');
+  setupDate('you');
+  fillSelect($('#me-h'), 0, 23, '시', null, '시 선택');
   fillSelect($('#me-mi'), 0, 59, '분', 0);
   $('#art-credit').textContent = ART.credit;
 
@@ -736,7 +844,7 @@ window.addEventListener('DOMContentLoaded', () => {
       if (!('speechSynthesis' in window) && !Object.keys(RECORDED).length) { $('#voice').textContent = '이 기기는 목소리가 안 돼요'; return; }
       const r = $('#result').hidden ? null : chNow;
       if (r) say('', $(`.chap[data-ch="${r}"] .talk .face`), r === 1 ? 'ch1' : r === 2 ? IL_KEY[last.ilgan] : 'ch' + r);
-      else say('', $('.scene'), stepNow === 0 && inviter ? null : 'step' + stepNow);
+      else say('', $('.scene'), stepNow === 0 && inviter ? null : (stepNow in AUDIO_OF ? AUDIO_OF[stepNow] : 'step' + stepNow));
     }
   });
   try { if (VOICE_READY && localStorage.getItem('ibul-voice') === '1') setVoice(true); } catch (e) { /* 무시 */ }
@@ -760,17 +868,24 @@ window.addEventListener('DOMContentLoaded', () => {
   setCal('you', 'solar');
 
   $('#start').addEventListener('click', () => goStep(10));
-  $$('.lv').forEach((b) => b.addEventListener('click', () => {
+  $('#go-tarot').addEventListener('click', () => { enterTarot(); goStep(30); });
+  $('#t-to-saju').addEventListener('click', () => goStep(10));
+  $('#home-btn').addEventListener('click', () => { stopTalk(); chMax = 1; $('#result').hidden = true; $('#stage').hidden = false; goStep(0); window.scrollTo({top: 0}); });
+  initTarot(goStep, (t) => { typeBubble(t); }, ART.face);
+  initGloss();
+  $$('.panel.guide, .panel[data-step="30"]').forEach((p) => markTerms(p));
+  $$('.lv:not(.tlv)').forEach((b) => b.addEventListener('click', () => {
     LV = b.dataset.lv; document.body.dataset.lv = LV;
+    if ($('#more-hidden')) $('#more-hidden').open = LV === 'pro';
     goStep(LV === 'new' ? 11 : 1);
   }));
-  $$('.guide .gnext').forEach((b) => b.addEventListener('click', () => {
+  $$('.guide:not([data-step^="3"]) .gnext').forEach((b) => b.addEventListener('click', () => {
     const n = +b.closest('.panel').dataset.step;
-    goStep(n >= 14 ? 1 : n + 1);
+    goStep(n >= 16 ? 1 : n + 1);
   }));
   $$('.guide .gskip').forEach((b) => b.addEventListener('click', () => goStep(1)));
   $$('.seal .cover').forEach((b) => b.addEventListener('click', () => openSeal(b.closest('.seal'))));
-  $('#ch-next').addEventListener('click', () => { showChap(Math.min(CH_N, chNow + 1)); window.scrollTo({top: 0, behavior: 'smooth'}); });
+  $('#ch-next').addEventListener('click', () => { if (chNow === CH_N) { $('#home-btn').click(); return; } showChap(Math.min(CH_N, chNow + 1)); window.scrollTo({top: 0, behavior: 'smooth'}); });
   $('#ch-prev').addEventListener('click', () => { showChap(Math.max(1, chNow - 1)); window.scrollTo({top: 0, behavior: 'smooth'}); });
   $$('.ds').forEach((b) => b.addEventListener('click', () => {
     if (!lastIn || !last) return;
@@ -785,7 +900,11 @@ window.addEventListener('DOMContentLoaded', () => {
   }));
   $('#next2').addEventListener('click', () => {
     $('#err2').textContent = '';
-    try { readDate('me'); goStep(3); } catch (err) { $('#err2').textContent = err.message; }
+    try {
+      readDate('me');
+      if (!sexPicked()) throw new Error('성별을 골라 주시오. 대운 방향과 연애·결혼운에 꼭 필요하오!');
+      goStep(3);
+    } catch (err) { $('#err2').textContent = err.message; $('#bubble-text').textContent = err.message; }
   });
   $('#me-hunk').addEventListener('change', () => { const u = $('#me-hunk').checked; $('#me-h').disabled = u; $('#me-mi').disabled = u; $('#me-corr').disabled = u; });
   $('#form').addEventListener('submit', onSubmit);
@@ -798,20 +917,23 @@ window.addEventListener('DOMContentLoaded', () => {
     stopTalk(); chMax = 1; $('#result').hidden = true; $('#stage').hidden = false; goStep(0); window.scrollTo({top: 0});
   });
   document.body.dataset.lv = LV;
-  goStep(0);
-  // 사주 / 타로 탭
-  let tarotReady = false;
-  $$('.tabs .tab').forEach((b) => b.addEventListener('click', () => {
-    const t = b.dataset.tab;
-    $$('.tabs .tab').forEach((x) => x.classList.toggle('on', x === b));
-    stopTalk();
-    $('#voice').hidden = t === 'tarot' || !VOICE_READY;
-    $('#tarot').hidden = t !== 'tarot';
-    if (t === 'tarot') { $('#stage').hidden = true; $('#result').hidden = true; if (!tarotReady) { initTarot(); tarotReady = true; } $$('#tarot .face-img').forEach((im) => { im.src = ART.face; }); }
-    else { if (last && last.p) { $('#result').hidden = false; } else { $('#stage').hidden = false; } }
-    window.scrollTo({top: 0});
-  }));
-  if (location.hash === '#tarot') $('.tabs .tab[data-tab="tarot"]').click();
+  $$('.lv-switch button').forEach((b) => b.addEventListener('click', () => { LV = b.dataset.lv; document.body.dataset.lv = LV; if ($('#more-hidden')) $('#more-hidden').open = LV === 'pro'; }));
+  drawFx(0); startBlink();
+  // 10/5 사용자: "처음에는 문 올리면서 도령의 고민 상담소에 온 걸 환영하고 바로 멘트 들어가면서 고를 수 있게"
+  const door = $('#door');
+  let opened = false;
+  const openDoor = () => {
+    if (opened) return; opened = true;
+    door.classList.add('open');
+    setTimeout(() => {
+      goStep(0);
+      if (location.hash === '#tarot') $('#go-tarot').click();
+    }, reduceMotion() ? 0 : 450);
+    setTimeout(() => door.classList.add('gone'), reduceMotion() ? 0 : 1200);
+  };
+  door.addEventListener('click', openDoor);
+  door.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') openDoor(); });
+  setTimeout(openDoor, reduceMotion() ? 0 : 1700);
 });
 
 // 시험용 (자동 검사에서만 씀)

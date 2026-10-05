@@ -1,15 +1,15 @@
 import asyncio, json, sys
 from playwright.async_api import async_playwright
 URL='file:///home/claude/work/saju/site/index.html'
-CASES=[('1990','5','15','14','30','여성','c1'),('1985','11','3',None,None,'남성','c2'),('2001','2','4','8','0','안 고를래요','c3')]
+CASES=[('1990','5','15','14','30','여성','c1'),('1985','11','3',None,None,'남성','c2'),('2001','2','4','8','0','비공개','c3')]
 async def run(pg, y,m,d,h,mi,sx,tag, shots):
-    await pg.goto(URL); await pg.wait_for_timeout(400)
+    await pg.goto(URL); await pg.click('#door'); await pg.wait_for_timeout(1400)
     await pg.click('#start'); await pg.click('.lv[data-lv="mid"]'); await pg.click('[data-step="1"] button.ghost')
     for s,v in [('#me-y',y),('#me-m',m),('#me-d',d)]: await pg.select_option(s,v)
     await pg.click(f'.seg.sex button:has-text("{sx}")'); await pg.click('#next2')
     if h is None: await pg.check('#me-hunk')
     else: await pg.select_option('#me-h',h); await pg.select_option('#me-mi',mi)
-    await pg.click('#go'); await pg.wait_for_timeout(1400)
+    await pg.click('#go'); await pg.wait_for_timeout(5600)
     o={'chart':(await pg.inner_text('#chart')).replace('\n',' '),'note':await pg.inner_text('#chart-note'),'str':await pg.inner_text('#str-badge'),
        'yong':(await pg.inner_text('#yong-box')).replace('\n',' '),'yongwhy':await pg.inner_text('#yong-why'),'sinsal':(await pg.inner_text('#sinsal'))[:300]}
     for n in range(1,10):

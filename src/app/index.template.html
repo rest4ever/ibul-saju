@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>이불 속 사주방</title>
-<meta name="description" content="누운 채로 1분! 타고난 성격, 2027년 신년운, 친구랑 궁합까지 무료로 봐요. 생년월일은 어디에도 저장하지 않아요.">
-<meta property="og:title" content="이불 속 사주방">
-<meta property="og:description" content="누운 채로 1분 사주 · 2027 신년운 · 친구랑 궁합">
+<title>도령의 고민 상담소</title>
+<meta name="description" content="도령이 사주와 타로로 고민을 들어 드려요. 타고난 성격, 2027년 운세, 타로 상담까지 무료. 생년월일은 어디에도 저장하지 않아요.">
+<meta property="og:title" content="도령의 고민 상담소">
+<meta property="og:description" content="도령의 사주 · 타로 상담 · 2027 신년운">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
@@ -48,10 +48,10 @@ select:disabled{opacity:.45}
 .check input{width:20px;height:20px;accent-color:var(--bamboo);flex-shrink:0}
 .check label{margin:0;font-weight:400}
 .hint{font-size:13px;color:var(--sub);margin:6px 0 0}
-button{font:inherit;font-family:var(--title);font-weight:400;font-size:19px;border:0;border-radius:14px;padding:14px;width:100%;margin-top:16px;cursor:pointer;background:linear-gradient(180deg,var(--gold2),var(--gold));color:#3A2A0C;box-shadow:0 4px 0 #A9792A}
+button{font:inherit;font-family:var(--title);font-weight:400;font-size:18px;line-height:1.25;border:0;border-radius:14px;padding:13px 16px;min-height:52px;width:100%;margin-top:14px;cursor:pointer;background:linear-gradient(180deg,var(--gold2),var(--gold));color:#3A2A0C;box-shadow:0 4px 0 #A9792A}
 button:active{transform:translateY(2px);box-shadow:0 2px 0 #A9792A}
 button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--rose);outline-offset:2px}
-button.ghost{background:transparent;color:var(--sub);box-shadow:none;font-family:var(--body);font-weight:400;font-size:15px;padding:8px;margin-top:6px}
+button.ghost{background:transparent;color:var(--sub);box-shadow:none;font-family:var(--body);font-weight:400;font-size:15px;padding:8px;margin-top:6px;min-height:40px}
 button.dark{background:var(--bamboo);color:#F6EFE0;box-shadow:0 4px 0 #1E3D30}
 .err{color:#B3261E;font-weight:700;min-height:1em;margin:8px 0 0}
 .card{margin-top:16px;background:var(--hanji);border-radius:20px;padding:20px;box-shadow:0 8px 20px rgba(0,0,0,.25)}
@@ -95,7 +95,75 @@ ul{padding-left:18px;margin:10px 0 0}
 footer{font-size:12.5px;color:var(--moon);margin-top:28px}
 footer p{margin:6px 0}
 footer b{color:#F6EFE0}
+#bubble-text{white-space:pre-line}
 .opt{font-weight:400;color:var(--sub);font-size:13px}
+.seg button,.lv-switch button,.say-btn,.voice-btn,.term,.t-pile,.mchart button,.t-back,.t-card,.toc button,.home-btn,.t-topic,.room,.lv{min-height:0}
+.door{position:fixed;inset:0;z-index:80;overflow:hidden;cursor:pointer}
+.door-panel{position:absolute;inset:0;background:#E9DCC0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;transition:transform 1.15s cubic-bezier(.65,0,.35,1);box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.lattice{position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 62px,#8B5E34 62px 68px),repeating-linear-gradient(0deg,transparent 0 62px,#8B5E34 62px 68px);opacity:.55}
+.door-panel::after{content:"";position:absolute;left:0;right:0;bottom:0;height:22px;background:linear-gradient(#6B4423,#4A2E16)}
+.sign{position:relative;background:linear-gradient(180deg,#3A2A18,#24170C);color:var(--gold2);border:4px solid #C9963B;border-radius:12px;padding:18px 26px 16px;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,.4)}
+.sign small{display:block;font-family:var(--body);font-weight:700;font-size:13px;color:#E8D6A8;letter-spacing:.2em}
+.sign b{display:block;font-family:var(--title);font-weight:400;font-size:34px;line-height:1.25;margin:6px 0 4px}
+.sign span{font-size:26px;display:inline-block;animation:sway 2.4s ease-in-out infinite}
+.door-hint{position:relative;font-family:var(--body);font-weight:700;font-size:14px;color:#5A4026;background:rgba(255,248,230,.85);padding:6px 14px;border-radius:999px;animation:pulse 1.6s ease-in-out infinite}
+.door.open .door-panel{transform:translateY(-104%)}
+.door.gone{display:none}
+@media (prefers-reduced-motion: reduce){.door-panel{transition:none}}
+.load-steps{list-style:none;margin:6px 0 0;padding:0}.load-steps li{display:flex;align-items:center;gap:8px;padding:6px 0;color:#B5A88E;transition:color .3s}
+.load-steps li i{width:20px;height:20px;border-radius:50%;border:2px solid #D9CCB0;display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-size:12px}
+.load-steps li.on{color:var(--ink)}.load-steps li.on i{background:var(--bamboo);border-color:var(--bamboo);color:#fff}
+.load-steps li.now i{border-color:var(--gold);animation:pulse 1s ease-in-out infinite}
+
+.top{position:relative}.home-btn{z-index:3;position:absolute;left:0;top:50%;transform:translateY(-50%);width:auto;margin:0;padding:8px 13px;font-family:var(--body);font-weight:700;font-size:13px;border-radius:999px;background:#2A2650;color:#CFC6E8;box-shadow:none;border:1.5px solid #4A4478;min-height:36px}
+.rooms{display:flex;flex-direction:column;gap:10px}
+.room{margin:0;text-align:left;padding:16px 18px;font-size:22px}
+.room small{display:block;font-family:var(--body);font-weight:400;font-size:13px;margin-top:3px;opacity:.85}
+#go-tarot{background:linear-gradient(180deg,#4A3B6E,#2A2650);color:var(--gold2);box-shadow:0 4px 0 #17143A;border:2px solid var(--gold)}
+body.room-tarot .dots,body.room-tarot #voice{display:none!important}
+.term{display:inline;width:auto;margin:0;padding:0;font:inherit;color:inherit;background:none;box-shadow:none;border:0;border-bottom:1.5px dotted var(--bamboo);border-radius:0;cursor:help}
+.gloss{position:fixed;inset:0;z-index:50;background:rgba(10,8,30,.45);display:flex;align-items:flex-end;justify-content:center}
+.gloss[hidden]{display:none!important}
+.gloss-box{width:min(440px,100%);background:var(--hanji);border-radius:20px 20px 0 0;padding:18px 18px 22px;box-shadow:0 -8px 24px rgba(0,0,0,.3);animation:unfold .3s cubic-bezier(0,0,0,1)}
+.gloss-box b{font-family:var(--title);font-weight:400;font-size:22px;color:var(--bamboo)}
+.gloss-box p{margin:6px 0 0;line-height:1.6}
+.t-steps{margin:6px 0 0;padding-left:22px}.t-steps li{margin:4px 0}.t-steps b{font-family:var(--title);font-weight:400;color:var(--bamboo);margin-right:6px}
+.breath{display:flex;flex-direction:column;align-items:center;gap:10px;padding:10px 0}
+.breath i{width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,#F6E7B8,#D9A441);animation:breathe2 6s ease-in-out infinite}
+@keyframes breathe2{0%,100%{transform:scale(.6);opacity:.6}50%{transform:scale(1.1);opacity:1}}
+.t-stack{position:relative;height:150px;margin:6px auto 4px;width:100px}
+.t-stack i{position:absolute;left:0;top:0;width:100px;height:150px;border-radius:10px;background:radial-gradient(circle at 50% 42%,#F6E7B8 0 9%,transparent 10%),repeating-linear-gradient(45deg,#2A2650 0 6px,#332D63 6px 12px);border:2px solid var(--gold);box-shadow:0 2px 0 #17143A}
+.t-stack i:nth-child(2){transform:rotate(-4deg)}.t-stack i:nth-child(3){transform:rotate(4deg)}.t-stack i:nth-child(4){transform:rotate(-8deg)}
+.t-stack.mixing i:nth-child(odd){animation:mixL .35s ease-in-out infinite alternate}.t-stack.mixing i:nth-child(even){animation:mixR .35s ease-in-out infinite alternate}
+@keyframes mixL{0%{transform:translateX(0) rotate(0)}100%{transform:translateX(-46px) rotate(-12deg)}}
+@keyframes mixR{0%{transform:translateX(0) rotate(0)}100%{transform:translateX(46px) rotate(12deg)}}
+.t-piles{display:flex;gap:10px;justify-content:center}
+.t-pile{position:relative;width:30%;max-width:110px;aspect-ratio:2/3;margin:0;padding:0;background:none;box-shadow:none}
+.t-pile i{position:absolute;inset:0;border-radius:9px;background:repeating-linear-gradient(45deg,#2A2650 0 6px,#332D63 6px 12px);border:2px solid var(--gold)}
+.t-pile i:nth-child(2){transform:translate(3px,-3px)}.t-pile i:nth-child(3){transform:translate(6px,-6px)}
+.t-pile span{position:absolute;left:0;right:0;bottom:-24px;font-family:var(--body);font-weight:700;font-size:13px;color:var(--sub)}
+.t-pile.chosen{transform:translateY(-14px)}.t-pile.chosen i{border-color:#fff;box-shadow:0 0 0 3px var(--gold2)}
+.t-piles{padding-bottom:26px}
+.t-slots{display:flex;flex-wrap:wrap;gap:6px}.t-slots span{font-size:12px;padding:3px 9px;border-radius:999px;background:#EDE2CB;color:var(--sub)}.t-slots span.on{background:var(--gold2);color:#3A2A0C;font-weight:700}
+.t-back{position:relative}
+.t-back.picked{transform:translateY(-8px);box-shadow:0 0 0 3px var(--gold2),0 6px 14px rgba(217,164,65,.55);opacity:1;border-color:#fff}
+.t-num{position:absolute;top:-8px;right:-6px;min-width:20px;height:20px;border-radius:10px;background:#B3261E;color:#fff;font:700 12px/20px var(--body);display:none}
+.t-back.picked .t-num{display:block}
+.t-card:disabled{opacity:.55}
+.lv-tnew{display:none}body[data-tl="new"] .tip.lv-tnew{display:block}
+
+.g-time{display:flex;align-items:stretch;gap:4px}.g-time div{flex:1;background:#fff;border:2px solid #E6D9BE;border-radius:12px;padding:8px 6px;text-align:center;font-size:12px}
+.g-time div.hl{border-color:var(--gold);background:#FFF4D6}.g-time b{display:block;font-family:var(--title);font-weight:400;font-size:15px}.g-time small{display:block;color:var(--bamboo);font-weight:700}.g-time span{display:block;color:var(--sub);margin-top:3px}.g-time em{font-style:normal;color:#B3261E;font-weight:700}.g-time i{align-self:center;font-style:normal;color:var(--sub)}
+.g-badge{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center;background:#fff;border-radius:12px;padding:10px 12px;border:2px solid #E6D9BE}.g-badge b{font-family:var(--title);font-weight:400;font-size:17px;color:var(--bamboo)}.g-badge span{font-size:13px;color:var(--sub)}
+.lv-pick button.lv small{line-height:1.45}
+.lv-switch{display:flex;align-items:center;gap:6px;justify-content:center;margin:0 0 8px;font-size:12px;color:#CFC6E8}
+.lv-switch button{width:auto;margin:0;padding:8px 14px;min-height:36px;font-family:var(--body);font-weight:700;font-size:13px;border-radius:999px;background:#2A2650;color:#CFC6E8;box-shadow:none;border:1.5px solid #4A4478}
+body[data-lv="new"] .lv-switch [data-lv="new"],body[data-lv="mid"] .lv-switch [data-lv="mid"],body[data-lv="pro"] .lv-switch [data-lv="pro"]{background:var(--gold2);color:#3A2A0C;border-color:var(--gold2)}
+.lv-pro-block{display:none}body[data-lv="pro"] .lv-pro-block{display:block}
+.only-pro{display:none}body[data-lv="pro"] .only-pro{display:inline}
+.cell em.easy{color:#8A6D3B;font-weight:400}
+.cell em.ss,.cell em.easy{display:none}body[data-lv="pro"] .cell em.ss,body[data-lv="new"] .cell em.easy{display:block}
+
 .tabs{display:flex;gap:6px;justify-content:center;margin:0 0 12px}
 .tabs .tab{width:auto;margin:0;padding:8px 18px;font-size:15px;border-radius:999px;background:#2A2650;color:#CFC6E8;box-shadow:none;border:1.5px solid #4A4478}
 .tabs .tab.on{background:var(--gold2);color:#3A2A0C;border-color:var(--gold2)}
@@ -109,7 +177,7 @@ footer b{color:#F6EFE0}
 .t-deck.dealt .t-back{animation:deal .45s cubic-bezier(0,0,0,1) both;animation-delay:var(--d)}
 @keyframes deal{0%{opacity:0;transform:translateY(-30px) rotate(-8deg)}100%{opacity:1;transform:none}}
 .t-back:hover{transform:translateY(-4px)}
-.t-back.picked{transform:translateY(-8px) scale(.92);opacity:.35}
+
 #t-result{display:flex;flex-direction:column;gap:14px;margin-top:8px}
 .t-slot{text-align:center}
 .t-pos{font-family:var(--title);font-size:17px;color:var(--bamboo);margin-bottom:6px}
@@ -124,14 +192,53 @@ footer b{color:#F6EFE0}
 .t-wip{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,#2A2650,#3A3168);border:3px solid var(--gold);border-radius:10px;color:#CFC6E8}
 .t-wip span{font-size:48px}.t-wip small{font-size:12px}
 .t-read{text-align:left;margin-top:10px}
+.t-qbox{background:#FFF4D6;border:2px solid var(--gold);border-radius:12px;padding:8px 12px;font-size:14px;color:var(--ink);text-align:center}
+.t-map{display:flex;gap:8px;justify-content:center;margin:10px 0 4px}
+.tm{flex:1;max-width:96px;text-align:center;font-size:11px;color:var(--sub)}
+.tm i,.tm img{display:block;aspect-ratio:600/894;width:100%;border-radius:6px;object-fit:cover}
+.tm i{background:repeating-linear-gradient(45deg,#2A2650 0 5px,#332D63 5px 10px);border:1.5px solid var(--gold)}
+.tm img{border:1.5px solid var(--gold2)}.tm.on img{animation:unfold .45s cubic-bezier(0,0,0,1)}
+.tm b{display:block;font-family:var(--title);font-weight:400;font-size:14px;color:var(--ink);margin-top:3px}
+.t-chat{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.msg{display:flex;gap:8px;align-items:flex-end;animation:msgin .3s cubic-bezier(0,0,0,1)}
+@keyframes msgin{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:none}}
+.msg .av{width:36px;height:36px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid var(--gold);background:#3A3168}
+.msg .av img{width:100%;height:100%;object-fit:cover}
+.msg .tx{background:#fff;border:2px solid #E6D9BE;border-radius:4px 16px 16px 16px;padding:10px 13px;font-size:15.5px;line-height:1.6;max-width:84%}
+.msg.d.typing .tx{display:flex;gap:5px;padding:14px 16px}
+.msg.d.typing .tx i{width:7px;height:7px;border-radius:50%;background:#B5A88E;animation:tdot 1s ease-in-out infinite}
+.msg.d.typing .tx i:nth-child(2){animation-delay:.15s}.msg.d.typing .tx i:nth-child(3){animation-delay:.3s}
+@keyframes tdot{0%,100%{opacity:.3;transform:none}50%{opacity:1;transform:translateY(-3px)}}
+.msg.tip .tx{background:#EEF5F0;border-color:#BCD6C7;font-size:14.5px}
+.msg.key .tx{background:#FFF4D6;border-color:var(--gold)}
+.msg.big .tx{font-family:var(--title);font-size:18px}
+.msg.advice .tx{background:#2A2650;color:#F6EFE0;border-color:var(--gold)}.msg.advice .tx b{color:var(--gold2)}
+.msg.me{justify-content:flex-end}.msg.me .tx{background:var(--bamboo);color:#fff;border-color:var(--bamboo);border-radius:16px 4px 16px 16px}
+.msg.cardm{flex-direction:column;align-items:center;gap:4px}
+.msg.cardm .t-card{width:58%;max-width:220px;margin:0}
+.flip-hint{font-size:12px;color:var(--sub)}.msg.cardm.flipped .flip-hint{visibility:hidden}
+.msg.cardm:not(.flipped) .t-card{animation:wiggle 2.2s ease-in-out infinite}
+@keyframes wiggle{0%,80%,100%{transform:none}85%{transform:rotate(-2deg)}90%{transform:rotate(2deg)}95%{transform:rotate(-1deg)}}
+.t-reply{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.t-reply .chip{margin:0;font-size:17px}
+.t-reply .chip.sub{background:#fff;color:var(--ink);border:2px solid #E6D9BE;box-shadow:0 3px 0 #D9CCB0}
+@media (prefers-reduced-motion: reduce){.msg,.msg.cardm:not(.flipped) .t-card,.tm.on img,.msg.d.typing .tx i{animation:none}}
 
 .toc{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 4px}
-.toc button{width:auto;margin:0;padding:6px 10px;font-family:var(--body);font-weight:700;font-size:12px;border-radius:999px;background:#2A2650;color:#CFC6E8;box-shadow:none;border:1.5px solid #4A4478}
+.toc button{width:auto;margin:0;padding:8px 12px;min-height:36px;font-family:var(--body);font-weight:700;font-size:13px;border-radius:999px;background:#2A2650;color:#CFC6E8;box-shadow:none;border:1.5px solid #4A4478}
 .toc button.on{background:var(--gold2);color:#3A2A0C;border-color:var(--gold2)}
 .toc button:disabled{opacity:.45}
 .chap{display:none}.chap.on{display:block;animation:unfold .45s cubic-bezier(0,0,0,1)}
-.chap-nav{display:flex;gap:8px;margin-top:14px}.chap-nav button{margin:0}.chap-nav #ch-prev{flex:0 0 34%;color:var(--moon)}
-.ch-count{text-align:center;color:#CFC6E8}
+.chap-nav{display:grid;grid-template-columns:88px 1fr;gap:10px;align-items:stretch;margin-top:16px}
+.chap-nav button{margin:0;height:64px;border-radius:16px;display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;overflow:hidden}
+.chap-nav #ch-prev{background:transparent;color:#E8E1FF;border:2px solid #5A5390;box-shadow:none;font-family:var(--body);font-weight:700;font-size:15px;padding:0}
+.chap-nav.first{grid-template-columns:1fr}.chap-nav.first #ch-prev{display:none!important}
+.chap-nav #ch-next{flex-direction:column;gap:1px;padding:0 14px;text-align:center}
+.chap-nav #ch-next small{font-family:var(--body);font-weight:700;font-size:12px;opacity:.75;line-height:1.2}
+.chap-nav #ch-next span{font-size:19px;line-height:1.2;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+
+.ch-prog{height:6px;border-radius:3px;background:#2E2A5A;margin:14px 2px 6px;overflow:hidden}.ch-prog i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:3px;transition:width .5s cubic-bezier(.65,0,.35,1)}
+.ch-count{text-align:center;color:#CFC6E8;margin-top:14px}
 details.more{margin-top:10px}details.more summary{cursor:pointer;font-weight:700;color:var(--bamboo)}
 .htbl{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px;text-align:center}.htbl th,.htbl td{border:1px solid #E6D9BE;padding:5px 3px}.htbl th{background:#F1E7D2}
 .gauge{position:relative;height:16px;border-radius:8px;background:linear-gradient(90deg,#9FB7E8,#E8DCC0 50%,#E8A07A);margin:10px 0 2px}
@@ -201,9 +308,15 @@ body[data-lv="new"] .tip.lv-new,body[data-lv="mid"] .tip.lv-mid,body[data-lv="pr
 .voice-btn{position:fixed;right:max(12px,calc(50% - 228px));bottom:calc(14px + env(safe-area-inset-bottom));top:auto;padding:10px 14px !important;box-shadow:0 4px 14px rgba(0,0,0,.35) !important;width:auto;margin:0;padding:7px 12px;font-family:var(--body);font-weight:700;font-size:13px;border-radius:999px;background:#2A2650;color:#F6EFE0;border:1.5px solid rgba(246,231,184,.55);z-index:5}
 .voice-btn[aria-pressed="true"]{background:var(--gold2);color:#3A2A0C;border-color:var(--gold2)}
 button.ghost-dark{background:transparent;color:var(--bamboo);box-shadow:none;border:2px solid var(--bamboo);font-size:16px;padding:10px;margin-top:12px}
-.scene img#art{animation:sway 2.8s ease-in-out infinite;transform-origin:50% 92%}
-.scene img#art.hop{animation:hop .5s cubic-bezier(0,0,0,1),sway 2.8s ease-in-out .5s infinite}
-.scene.talking img#art{animation:talk .3s ease-in-out infinite}
+.rig{position:absolute;inset:0;animation:sway 2.8s ease-in-out infinite;transform-origin:50% 92%}
+.rig.hop{animation:hop .5s cubic-bezier(0,0,0,1),sway 2.8s ease-in-out .5s infinite}
+.scene.talking .rig{animation:talk .34s ease-in-out infinite}
+#fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#fx .mouth{opacity:0}
+.scene.talking #fx .mouth{opacity:1}
+.scene.talking #fx .mouth .jaw{animation:flap .16s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 20%}
+@keyframes flap{0%{transform:scaleY(.18)}100%{transform:scaleY(1)}}
+#fx .lids{opacity:0}#fx.blink .lids{opacity:1}
 .talk .face.talking img{animation:talk .3s ease-in-out infinite}
 .scene::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 18% 22%,#FFF6D0 0 1.6px,transparent 2.4px),radial-gradient(circle at 82% 16%,#FFF6D0 0 1.4px,transparent 2.2px),radial-gradient(circle at 74% 44%,#FFF6D0 0 1.2px,transparent 2px),radial-gradient(circle at 12% 58%,#FFF6D0 0 1.3px,transparent 2px),radial-gradient(circle at 90% 70%,#FFF6D0 0 1.5px,transparent 2.3px);animation:twinkle 2.2s ease-in-out infinite alternate}
 @keyframes sway{0%,100%{transform:translateY(0) rotate(-1.6deg)}50%{transform:translateY(-10px) rotate(1.6deg)}}
@@ -211,34 +324,53 @@ button.ghost-dark{background:transparent;color:var(--bamboo);box-shadow:none;bor
 @keyframes talk{0%,100%{transform:translateY(0) scale(1,1) rotate(0)}30%{transform:translateY(-9px) scale(1.03,.97) rotate(-1deg)}70%{transform:translateY(-4px) scale(.99,1.02) rotate(1deg)}}
 @keyframes twinkle{0%{opacity:.15}100%{opacity:.95}}
 .say-btn{width:auto;margin:6px 0 0;padding:4px 10px;font-family:var(--body);font-weight:700;font-size:12px;border-radius:999px;background:var(--night);color:var(--gold2);box-shadow:none}
-@media (prefers-reduced-motion: reduce){.seal .cover,.g-grid .me i,.seal.open .inner{animation:none}.scene img#art,.scene img#art.hop,.scene.talking img#art,.talk .face.talking img,.scene::after{animation:none}}
+@media (prefers-reduced-motion: reduce){.seal .cover,.g-grid .me i,.seal.open .inner{animation:none}.rig,.rig.hop,.scene.talking .rig,.scene.talking #fx .mouth .jaw,.talk .face.talking img,.scene::after{animation:none}}
 </style>
 </head>
 <body>
+<div id="door" class="door" role="button" tabindex="0" aria-label="상담소 문 열기"><div class="door-panel"><div class="lattice"></div><div class="sign"><small>어서 오시오</small><b>도령의<br>고민 상담소</b><span>🏮</span></div><p class="door-hint">톡 누르면 문이 열려요</p></div></div>
 <div class="wrap">
-  <div class="top">🌙 이불 속 사주방</div>
-  <div class="tabs" role="tablist"><button type="button" class="tab on" data-tab="saju" role="tab">📜 사주</button><button type="button" class="tab" data-tab="tarot" role="tab">🃏 타로</button></div>
+  <div class="top"><button type="button" class="home-btn" id="home-btn" hidden>← 상담소</button><span id="top-title">🏮 도령의 고민 상담소</span></div>
   <button type="button" class="voice-btn" id="voice" aria-pressed="false">🔈 도령 목소리 켜기</button>
 
   <section id="stage">
-    <div class="scene"><img id="art" alt="이불 도령"></div>
-    <div class="bubble"><div class="who">이불 도령</div><div id="bubble-text"></div></div>
+    <div class="scene"><div class="rig" id="rig"><img id="art" alt="도령"><svg id="fx" viewBox="0 0 640 640" aria-hidden="true"></svg></div></div>
+    <div class="bubble"><div class="who">도령</div><div id="bubble-text"></div></div>
 
     <form id="form" autocomplete="off">
       <div class="panel" data-step="0">
-        <button type="button" id="start">사주 보러 들어가기</button>
-        <p class="hint" style="text-align:center">1분이면 끝! 생년월일은 어디에도 저장 안 해요</p>
+        <div class="rooms">
+          <button type="button" class="room" id="start">📜 사주방<small>태어난 날·시간으로 보는 타고난 나, 2027년 운, 궁합</small></button>
+          <button type="button" class="room" id="go-tarot">🃏 타로방<small>지금 마음속 질문 하나를 카드로 들여다보기</small></button>
+        </div>
+        <p class="hint" style="text-align:center">둘 다 무료! 입력한 내용은 어디에도 저장 안 해요</p>
       </div>
 
       <div class="panel" data-step="10" hidden>
         <div class="lv-pick">
-          <button type="button" class="lv" data-lv="new">처음이에요 🐣<small>사주가 뭔지부터 차근차근 알려 주세요</small></button>
-          <button type="button" class="lv" data-lv="mid">조금 알아요<small>오행, 일간 정도는 들어 봤어요</small></button>
-          <button type="button" class="lv" data-lv="pro">잘 알아요<small>십신까지 보여 주세요</small></button>
+          <button type="button" class="lv" data-lv="new">처음이에요 🐣<small>사주가 어디서 왔는지부터 그림 6컷으로 차근차근 + 결과의 어려운 말은 전부 풀어서</small></button>
+          <button type="button" class="lv" data-lv="mid">조금 알아요 🙂<small>띠·오행 정도는 알아요 → 설명은 건너뛰고, 결과는 쉬운 말로 핵심만</small></button>
+          <button type="button" class="lv" data-lv="pro">잘 알아요 🧐<small>십신·대운 다 알아요 → 한자·십신·지장간·격국·계산 근거까지 전문가 화면</small></button>
         </div>
       </div>
 
       <div class="panel guide" data-step="11" hidden>
+        <h3>사주는 언제 생겼을까?</h3>
+        <div class="g-time"><div><b>당나라</b><small>이허중</small><span>태어난 <em>해</em>를 중심으로 운을 봄</span></div><i>→</i><div class="hl"><b>송나라 무렵</b><small>서자평</small><span>태어난 <em>날</em>을 '나'로 보는 방법으로 바꿈</span></div><i>→</i><div><b>지금</b><small>자평명리</small><span>오늘날 사주는 대부분 이 방식</span></div></div>
+        <p>천 년도 더 전, 중국 당나라의 <b>이허중</b>이 태어난 해를 중심으로 운을 보는 법을 정리했어요. 그 뒤 <b>서자평</b>이 '태어난 날'을 나로 놓고 나머지 글자와의 관계를 보는 방법으로 바꿨는데, 지금 우리가 보는 사주가 바로 이 <b>자평명리</b>예요.</p>
+        <button type="button" class="gnext">다음</button>
+        <button type="button" class="ghost gskip">설명 건너뛰기</button>
+      </div>
+
+      <div class="panel guide" data-step="12" hidden>
+        <h3>조선에도 '사주 공무원'이 있었다?</h3>
+        <div class="g-badge"><b>관상감</b><span>하늘·시간·길흉을 맡은 나라 관청</span><b>명과학</b><span>타고난 복과 운, 좋은 날을 보는 학문</span><b>음양과</b><span>이 관리를 뽑던 나라 시험</span></div>
+        <p>조선의 관청 <b>관상감</b>에서는 '명과학'을 가르치고 <b>음양과</b>라는 시험으로 관리를 뽑았어요. 시험 책 가운데 하나가 바로 『서자평』! 그만큼 오래, 진지하게 이어져 온 학문이에요. 물론 지금은 재미와 참고로 보는 거고요~</p>
+        <button type="button" class="gnext">다음</button>
+        <button type="button" class="ghost gskip">설명 건너뛰기</button>
+      </div>
+
+      <div class="panel guide" data-step="13" hidden>
         <h3>사주(四柱) = 네 기둥</h3>
         <div class="g-grid">
           <div><span>시</span><i>?</i><i>?</i></div><div><span>날</span><i>?</i><i>?</i></div><div><span>달</span><i>?</i><i>?</i></div><div><span>해</span><i>?</i><i>?</i></div>
@@ -248,7 +380,7 @@ button.ghost-dark{background:transparent;color:var(--bamboo);box-shadow:none;bor
         <button type="button" class="ghost gskip">설명 건너뛰기</button>
       </div>
 
-      <div class="panel guide" data-step="12" hidden>
+      <div class="panel guide" data-step="14" hidden>
         <h3>글자마다 기운이 있어요 (오행)</h3>
         <div class="g-el"><i style="--c:#3E8E5A">나무</i><em>→</em><i style="--c:#D9473A">불</i><em>→</em><i style="--c:#C99A2E">흙</i><em>→</em><i style="--c:#8A8F98">쇠</i><em>→</em><i style="--c:#2F6FD1">물</i></div>
         <p>여덟 글자는 저마다 <b>나무·불·흙·쇠·물</b> 중 하나예요. 화살표처럼 서로 <b>도와주는 사이</b>(나무가 불을 키움)도 있고, <b>누르는 사이</b>(물이 불을 끔)도 있어요. 이 관계로 성격과 운을 풀어요.</p>
@@ -256,7 +388,7 @@ button.ghost-dark{background:transparent;color:var(--bamboo);box-shadow:none;bor
         <button type="button" class="ghost gskip">설명 건너뛰기</button>
       </div>
 
-      <div class="panel guide" data-step="13" hidden>
+      <div class="panel guide" data-step="15" hidden>
         <h3>제일 중요한 글자 = '나' (일간)</h3>
         <div class="g-grid">
           <div><span>시</span><i>?</i><i>?</i></div><div class="me"><span>날</span><i>나</i><i>?</i></div><div><span>달</span><i>?</i><i>?</i></div><div><span>해</span><i>?</i><i>?</i></div>
@@ -266,7 +398,7 @@ button.ghost-dark{background:transparent;color:var(--bamboo);box-shadow:none;bor
         <button type="button" class="ghost gskip">설명 건너뛰기</button>
       </div>
 
-      <div class="panel guide" data-step="14" hidden>
+      <div class="panel guide" data-step="16" hidden>
         <h3>운세는 이렇게 봐요</h3>
         <div class="g-grid g-year"><div class="yr"><span>2027년</span><i style="--c:#D9473A">정</i><i style="--c:#C99A2E">미</i></div></div>
         <p>해마다 글자가 있어요. <b>2027년은 정미(丁未)년!</b> 이 글자가 '나'에게 돈인지, 일인지, 도움인지 보는 게 신년운이에요. 이제 그대 사주를 펼쳐 봐요!</p>
@@ -275,6 +407,7 @@ button.ghost-dark{background:transparent;color:var(--bamboo);box-shadow:none;bor
 
       <div class="panel" data-step="1" hidden>
         <label for="nick">불러 드릴 이름 (별명 OK)</label>
+        <p class="hint">※ 사주는 이름이 아니라 <b>태어난 날과 시간</b>으로 봐요. 이름은 풀이에서 불러 드릴 때만 써요. (이름 글자로 보는 건 '성명학'이라는 다른 분야예요)</p>
         <div class="row"><input id="nick" maxlength="8" placeholder="예: 쉬고싶은청년"></div>
         <button type="button" class="next">다음</button>
         <button type="button" class="ghost next" data-skip="1">그냥 넘어갈래요</button>
@@ -289,19 +422,20 @@ button.ghost-dark{background:transparent;color:var(--bamboo);box-shadow:none;bor
         <div id="me-leapwrap" class="check" hidden><input type="checkbox" id="me-leap"><label for="me-leap">윤달이에요</label></div>
         <label>태어난 날</label>
         <div class="row"><select id="me-y" aria-label="년"></select><select id="me-m" aria-label="월"></select><select id="me-d" aria-label="일"></select></div>
-        <label>성별 <span class="opt">(안 골라도 돼요)</span></label>
+        <label>성별 <span class="opt">(꼭 골라 주세요)</span></label>
         <div class="seg sex" role="group" aria-label="성별">
           <button type="button" data-sex="여">여성</button>
           <button type="button" data-sex="남">남성</button>
-          <button type="button" class="on" data-sex="">안 고를래요</button>
+          <button type="button" data-sex="-">비공개</button>
         </div>
-        <p class="hint">전통 풀이는 연애·결혼운을 성별에 따라 다른 글자로 봐요. 안 고르면 배우자 자리로만 봐 드려요.</p>
+        <p class="hint">성별은 사주에서 중요해요. 10년마다 바뀌는 큰 흐름(대운)이 흐르는 방향과, 연애·결혼운을 보는 글자가 성별에 따라 달라져요. "비공개"를 고르면 이 두 가지는 빼고 봐 드려요.</p>
         <button type="button" class="next" id="next2">다음</button>
         <p id="err2" class="err" role="alert"></p>
       </div>
 
       <div class="panel" data-step="3" hidden>
-        <label>태어난 시간</label>
+        <label>태어난 시간 <span class="opt">(꼭 골라 주세요)</span></label>
+        <p class="hint">태어난 시간은 네 번째 기둥(시주)이 돼요. 모르면 "몰라요"를 체크하세요. 그래도 해·달·날 세 기둥으로 볼 수 있어요.</p>
         <div class="row"><select id="me-h" aria-label="시"></select><select id="me-mi" aria-label="분"></select></div>
         <div class="check"><input type="checkbox" id="me-hunk"><label for="me-hunk">태어난 시간 몰라요</label></div>
         <div class="check"><input type="checkbox" id="me-corr" checked><label for="me-corr">실제 해 위치로 시간 맞추기 (서울 기준 약 32분)</label></div>
@@ -310,30 +444,81 @@ button.ghost-dark{background:transparent;color:var(--bamboo);box-shadow:none;bor
         <p id="err" class="err" role="alert"></p>
       </div>
 
+      <div class="panel" data-step="30" hidden>
+        <div class="lv-pick">
+          <button type="button" class="lv tlv" data-tl="new">타로는 처음이에요 🐣<small>타로가 뭔지, 어떻게 보는지부터 차근차근 + 어려운 말 풀이</small></button>
+          <button type="button" class="lv tlv" data-tl="old">해 봤어요 🙂<small>설명은 건너뛰고 바로 질문 고르기</small></button>
+        </div>
+      </div>
+      <div class="panel guide" data-step="31" hidden>
+        <h3>타로는 어디서 왔을까?</h3>
+        <div class="g-time"><div><b>15세기</b><small>이탈리아</small><span>그림 카드 놀이 '타로키'로 시작</span></div><i>→</i><div class="hl"><b>1780년대</b><small>프랑스</small><span>점을 보는 데 쓰기 시작</span></div><i>→</i><div><b>지금</b><small>78장</small><span>메이저 22장 + 마이너 56장</span></div></div>
+        <p>타로는 원래 15세기 이탈리아의 <b>카드 놀이</b>였어요. 1780년대 프랑스에서 카드 그림에 뜻을 붙여 <b>점</b>을 보기 시작했고, 지금 덱은 보통 <b>78장</b>이에요.</p>
+        <p>이 중 인생의 큰 흐름을 보여 주는 그림 카드 <b>22장</b>을 '메이저 아르카나'라고 해요. 우리 타로방은 이 22장으로 봐요.</p>
+        <button type="button" class="gnext" data-tnext="32">다음</button>
+        <button type="button" class="ghost" data-tnext="33">설명 건너뛰기</button>
+      </div>
+      <div class="panel guide" data-step="32" hidden>
+        <h3>타로는 이렇게 봐요</h3>
+        <ol class="t-steps"><li><b>질문 정하기</b> 무엇이 궁금한지 하나만</li><li><b>마음 가라앉히기</b> 질문을 떠올리며 숨 고르기</li><li><b>섞기(셔플)</b> 카드를 골고루 섞기</li><li><b>나누기(커트)</b> 세 더미 중 하나를 맨 위로</li><li><b>고르기</b> 끌리는 카드를 정해진 장수만큼</li><li><b>뒤집기</b> 자리마다 한 장씩</li><li><b>풀이</b> 카드 뜻 + 흐름 읽기</li></ol>
+        <p class="xtra">카드는 미래를 정해 주는 게 아니에요. 지금 내 마음과 흐름을 비춰 보는 <b>거울</b>이라고 생각하면 돼요. 재미로, 가볍게!</p>
+        <button type="button" class="gnext" data-tnext="33">시작하기</button>
+      </div>
+      <div class="panel" data-step="33" hidden>
+        <label>무엇이 궁금하오?</label>
+        <div class="t-topics">
+          <button type="button" class="t-topic on" data-t="today">☀️ 오늘의 운세<small>한 장</small></button>
+          <button type="button" class="t-topic" data-t="love">💕 연애·속마음<small>세 장</small></button>
+          <button type="button" class="t-topic" data-t="work">💼 일·돈<small>세 장</small></button>
+          <button type="button" class="t-topic" data-t="ask">🔮 고민 한 가지<small>한 장</small></button>
+        </div>
+        <p class="hint" id="t-spread-note"></p>
+        <label for="t-q">질문을 한 줄로 적어 봐도 좋아요 <span class="opt">(선택, 어디에도 저장 안 해요)</span></label>
+        <div class="row"><input id="t-q" maxlength="40" placeholder="예: 이번 달 이직 준비, 어떻게 하면 좋을까?"></div>
+        <p class="tip lv-tnew">💡 질문은 "될까? 안 될까?"보다 "어떻게 하면 좋을까?"처럼 물어야 풀이가 잘 맞아요. 질문 하나에 카드 한 번!</p>
+        <button type="button" id="t-q-next">다음</button>
+      </div>
+      <div class="panel" data-step="34" hidden>
+        <div class="breath"><i></i><span>들이쉬고… 내쉬고…</span></div>
+        <p class="tip lv-tnew">💡 타로를 볼 땐 질문 하나에 마음을 모으는 게 시작이에요. 실제 타로 상담에서도 이 과정을 거쳐요.</p>
+        <button type="button" data-tnext="35">마음 준비됐어요</button>
+      </div>
+      <div class="panel" data-step="35" hidden>
+        <div class="t-stack" id="t-stack"><i></i><i></i><i></i><i></i><i></i></div>
+        <button type="button" id="t-shuf">카드 섞기 시작 🔀</button>
+        <p class="tip lv-tnew">💡 <b>섞기(셔플)</b>: 카드를 골고루 섞는 거예요. 그대가 "그만"을 누른 순간의 순서로 카드가 놓여요.</p>
+      </div>
+      <div class="panel" data-step="36" hidden>
+        <div class="t-piles"><button type="button" class="t-pile"><i></i><i></i><i></i><span>왼쪽</span></button><button type="button" class="t-pile"><i></i><i></i><i></i><span>가운데</span></button><button type="button" class="t-pile"><i></i><i></i><i></i><span>오른쪽</span></button></div>
+        <p class="tip lv-tnew">💡 <b>나누기(커트)</b>: 섞은 카드를 세 더미로 나눠, 고른 더미를 맨 위로 올리는 거예요. 내 손으로 순서를 한 번 더 정하는 과정이에요.</p>
+      </div>
+      <div class="panel" data-step="37" hidden>
+        <div class="t-slots" id="t-slots"></div>
+        <p class="hint" id="t-count"></p>
+        <div class="t-deck" id="t-deck"></div>
+        <button type="button" id="t-confirm" disabled>이 카드로 정하기</button>
+        <p class="tip lv-tnew">💡 <b>스프레드</b>: 카드를 놓는 자리와 순서예요. 자리마다 뜻이 정해져 있어서, 같은 카드라도 어느 자리에 나왔는지에 따라 풀이가 달라져요.</p>
+      </div>
+      <div class="panel" data-step="38" hidden>
+        <div class="t-qbox" id="t-qshow"></div>
+        <div class="t-map" id="t-map"></div>
+        <div class="t-chat" id="t-chat" aria-live="polite"></div>
+        <div class="t-reply" id="t-reply" hidden></div>
+        <div id="t-end" hidden>
+          <button type="button" id="t-again">다른 고민으로 다시 보기</button>
+          <button type="button" class="ghost" id="t-to-saju">사주도 보러 가기 →</button>
+        </div>
+        <p class="note">메이저 아르카나 22장, 정방향 풀이예요. 뜻과 그림 설명은 1910년 웨이트 해설서(저작권 만료)를 바탕으로 요즘 말로 새로 썼고, 카드 그림은 이 사이트 도령 그림체로 AI(Google Gemini)가 그린 자체 카드라 전통 그림과 세부가 달라요. 재미로 보는 타로라 중요한 결정은 타로만 보고 하지 않기~</p>
+      </div>
+
       <div class="panel" data-step="4" hidden>
-        <div class="loading"><i></i><i></i><i></i></div>
+        <ul class="load-steps" id="load-steps"><li><i></i>태어난 해·달·날·시로 네 기둥 세우는 중</li><li><i></i>여덟 글자의 다섯 기운 세는 중</li><li><i></i>나를 살리는 기운(용신) 찾는 중</li><li><i></i>2027년 운과 맞춰 보는 중</li></ul>
       </div>
     </form>
     <div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
   </section>
 
-  <section id="tarot" hidden>
-    <div class="talk"><div class="face"><img class="face-img" alt=""></div><div class="say" id="t-say"></div></div>
-    <div class="card">
-      <h2>이불 속 타로</h2>
-      <div class="t-topics">
-        <button type="button" class="t-topic on" data-t="today">☀️ 오늘의 운세<small>한 장</small></button>
-        <button type="button" class="t-topic" data-t="love">💕 연애·속마음<small>세 장</small></button>
-        <button type="button" class="t-topic" data-t="work">💼 일·돈<small>세 장</small></button>
-        <button type="button" class="t-topic" data-t="ask">🔮 고민 한 가지<small>한 장</small></button>
-      </div>
-      <p class="note" id="t-count"></p>
-      <div class="t-deck" id="t-deck"></div>
-      <div id="t-result"></div>
-      <button type="button" id="t-again" hidden>다시 뽑기</button>
-      <p class="note">메이저 아르카나 22장, 정방향 풀이예요. 뜻은 1910년 웨이트 해설서(저작권 만료)를 바탕으로 요즘 말로 새로 썼고, 그림은 이 사이트 도령 그림체로 AI(Google Gemini)가 그린 자체 카드예요. 재미로 보는 타로라 중요한 결정은 타로만 보고 하지 않기~</p>
-    </div>
-  </section>
+
 
   <section id="result" hidden>
     <div class="card gh-card" id="gh-result" hidden>
@@ -345,6 +530,7 @@ button.ghost-dark{background:transparent;color:var(--bamboo);box-shadow:none;bor
       <p class="note">나도 다른 친구랑 보고 싶다면? 마지막 장에서 내 궁합 링크 만들기!</p>
     </div>
 
+    <div class="lv-switch" role="group" aria-label="풀이 수준"><span>풀이 수준</span><button type="button" data-lv="new">처음</button><button type="button" data-lv="mid">조금</button><button type="button" data-lv="pro">전문가</button></div>
     <nav class="toc" id="toc" aria-label="목차"></nav>
 
     <!-- 1장 -->
@@ -356,7 +542,8 @@ button.ghost-dark{background:transparent;color:var(--bamboo);box-shadow:none;bor
         <p id="chart-note" class="note"></p>
         <p class="tip lv-new">💡 <b>읽는 법</b> — 세로 한 줄이 기둥 하나예요. 오른쪽부터 태어난 해·달·날·시. 위 칸은 하늘 글자(천간), 아래 칸은 땅 글자(지지), 색은 다섯 기운이에요. 빨간 '일주 (나)' 위 칸이 바로 그대예요. 글자 아래 작은 글씨는 '나'와 어떤 사이인지(십신)예요.</p>
         <p class="tip lv-mid">💡 위 칸 천간, 아래 칸 지지. 작은 글씨는 일간 기준 십신이에요.</p>
-        <details class="more"><summary>숨은 글자(지장간)·12운성 보기</summary><div id="hidden-tbl"></div>
+        <p class="tip lv-pro" id="pro-gyeok"></p>
+        <details class="more lv-pro-block" id="more-hidden"><summary>숨은 글자(지장간)·12운성 보기</summary><div id="hidden-tbl"></div>
           <p class="note">지장간: 땅 글자 속에 숨은 하늘 글자 (한국식 표, 괄호는 힘쓰는 날수). 12운성: 내가 그 자리에서 어느 단계의 힘인지 (화토동법·음간 역행 기준).</p></details>
       </div>
       <div class="card">
@@ -365,7 +552,7 @@ button.ghost-dark{background:transparent;color:var(--bamboo);box-shadow:none;bor
         <div class="gauge-lab"><span>신약</span><span>중화</span><span>신강</span></div>
         <div class="area-t" id="str-title"></div>
         <p id="str-text"></p>
-        <p class="note" id="str-how"></p>
+        <p class="note lv-pro-block" id="str-how"></p>
         <div id="inner-rel"></div>
       </div>
     </div>
@@ -518,9 +705,10 @@ button.ghost-dark{background:transparent;color:var(--bamboo);box-shadow:none;bor
       </form>
     </div>
 
+    <div class="ch-prog"><i id="ch-bar"></i></div>
     <div class="chap-nav">
       <button type="button" class="ghost" id="ch-prev">← 이전 장</button>
-      <button type="button" id="ch-next">다음 장 넘기기 →</button>
+      <button type="button" id="ch-next"><small>다음 장</small><span>넘기기 →</span></button>
     </div>
     <p class="note ch-count" id="ch-count"></p>
     <button type="button" class="ghost" id="again" style="color:var(--moon)">처음부터 다시 보기</button>
@@ -533,6 +721,7 @@ button.ghost-dark{background:transparent;color:var(--bamboo);box-shadow:none;bor
     <p id="art-credit">캐릭터 그림: AI(Google Gemini)로 만든 그림</p>
   </footer>
 </div>
+<div id="gloss" class="gloss" hidden role="dialog" aria-label="용어 설명"><div class="gloss-box"><b id="gloss-t"></b><p id="gloss-x"></p><button type="button" id="gloss-close">알겠소!</button></div></div>
 <script>
 /*__APP__*/
 </script>
