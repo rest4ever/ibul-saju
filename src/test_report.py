@@ -9,7 +9,7 @@ async def run(pg, y,m,d,h,mi,sx,tag, shots):
     await pg.click(f'.seg.sex button:has-text("{sx}")'); await pg.click('#next2')
     if h is None: await pg.check('#me-hunk')
     else: await pg.select_option('#me-h',h); await pg.select_option('#me-mi',mi)
-    await pg.click('#go'); await pg.wait_for_timeout(5600)
+    await pg.click('#go'); await pg.wait_for_timeout(9500)
     o={'chart':(await pg.inner_text('#chart')).replace('\n',' '),'note':await pg.inner_text('#chart-note'),'str':await pg.inner_text('#str-badge'),
        'yong':(await pg.inner_text('#yong-box')).replace('\n',' '),'yongwhy':await pg.inner_text('#yong-why'),'sinsal':(await pg.inner_text('#sinsal'))[:300]}
     for n in range(1,10):

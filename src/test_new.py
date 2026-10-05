@@ -14,7 +14,7 @@ with sync_playwright() as p:
     pg.click('#next2'); pg.wait_for_timeout(200); out['err_sex']=pg.inner_text('#err2')
     pg.click('.seg.sex button:has-text("여성")'); pg.click('#next2'); pg.wait_for_timeout(300)
     pg.click('#go'); pg.wait_for_timeout(200); out['err_time']=pg.inner_text('#err')
-    pg.select_option('#me-h','14'); pg.click('#go'); pg.wait_for_timeout(5600)
+    pg.select_option('#me-h','14'); pg.click('#go'); pg.wait_for_timeout(9500)
     out['terms']=pg.locator('#result .term').count()
     pg.evaluate('window.__saju.showChap(3)'); pg.wait_for_timeout(300)
     t=pg.locator('.chap.on .term').first; out['term_word']=t.inner_text(); t.click(); pg.wait_for_timeout(300)

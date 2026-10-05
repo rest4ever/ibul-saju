@@ -18,7 +18,7 @@ async def main():
         await pg.click('[data-step="1"] button.ghost')
         for s,v in [('#me-y','1990'),('#me-m','5'),('#me-d','15')]: await pg.select_option(s,v)
         await pg.click('.seg.sex button:has-text("여성")')
-        await pg.click('.seg.sex button:has-text("여성")'); await pg.click('#next2'); await pg.select_option('#me-h','14'); await pg.click('#go'); await pg.wait_for_timeout(5600)
+        await pg.click('.seg.sex button:has-text("여성")'); await pg.click('#next2'); await pg.select_option('#me-h','14'); await pg.click('#go'); await pg.wait_for_timeout(9500)
         out['tips_visible_new']=[await pg.is_visible('.tip.lv-new >> nth=0')]
         await pg.evaluate('window.__saju.showChap(2)'); out['tips_visible_new'].append(await pg.is_visible('#tip-type'))
         out['tip_type']=await pg.inner_text('#tip-type')
@@ -38,7 +38,7 @@ async def main():
         await pg.goto(URL+'?x'); await pg.click('#door'); await pg.wait_for_timeout(1400)
         await pg.click('#start'); await pg.click('.lv[data-lv="pro"]'); await pg.click('[data-step="1"] button.ghost')
         for s,v in [('#me-y','1990'),('#me-m','5'),('#me-d','15')]: await pg.select_option(s,v)
-        await pg.click('.seg.sex button:has-text("여성")'); await pg.click('#next2'); await pg.select_option('#me-h','14'); await pg.click('#go'); await pg.wait_for_timeout(5600)
+        await pg.click('.seg.sex button:has-text("여성")'); await pg.click('#next2'); await pg.select_option('#me-h','14'); await pg.click('#go'); await pg.wait_for_timeout(9500)
         out['chart_pro']=(await pg.inner_text('#chart')).replace('\n',' ')
         await pg.evaluate('window.__saju.showChap(6)'); await pg.click('#seal-2027 .cover'); await pg.wait_for_timeout(400)
         out['tip_year_pro']=await pg.inner_text('#tip-year-pro')

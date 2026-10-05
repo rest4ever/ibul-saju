@@ -10,7 +10,7 @@ async def fill_me(pg, y, m, d, h=None, mi=0, lunar=False, nick=None):
     await pg.click('.seg.sex button:has-text("여성")'); await pg.click('#next2'); await pg.wait_for_timeout(150)
     if h is None: await pg.check('#me-hunk')
     else: await pg.select_option('#me-h',str(h)); await pg.select_option('#me-mi',str(mi))
-    await pg.click('#go'); await pg.wait_for_timeout(5600)
+    await pg.click('#go'); await pg.wait_for_timeout(9500)
 async def main():
     async with async_playwright() as p:
         b=await p.chromium.launch()
@@ -28,7 +28,7 @@ async def main():
         await pg.screenshot(path='f_step2.png')
         await pg.click('.seg.sex button:has-text("여성")'); await pg.click('#next2'); await pg.wait_for_timeout(200)
         await pg.select_option('#me-h','14'); await pg.select_option('#me-mi','30'); await pg.screenshot(path='f_step3.png')
-        await pg.click('#go'); await pg.wait_for_timeout(300); out['loading']=await pg.get_attribute('#bubble-text','data-full'); await pg.wait_for_timeout(2000); out['loading2']=await pg.get_attribute('#bubble-text','data-full'); await pg.wait_for_timeout(3600)
+        await pg.click('#go'); await pg.wait_for_timeout(300); out['loading']=await pg.get_attribute('#bubble-text','data-full'); await pg.wait_for_timeout(2000); out['loading2']=await pg.get_attribute('#bubble-text','data-full'); await pg.wait_for_timeout(5000); out['loading3']=await pg.get_attribute('#bubble-text','data-full'); await pg.wait_for_timeout(2500)
         out['chart']=(await pg.inner_text('#chart')).replace('\n',' '); out['say']=await pg.inner_text('#say-type')
         await pg.screenshot(path='f_result.png', full_page=True)
         await pg.evaluate('window.__saju.showChap(2)')
@@ -56,7 +56,7 @@ async def main():
         out['leap_visible']=await pg3.is_visible('#me-leap')
         await pg3.check('#me-leap'); await pg3.select_option('#me-y','1990'); await pg3.select_option('#me-m','1'); await pg3.select_option('#me-d','1'); await pg3.click('.seg.sex button:has-text("여성")'); await pg3.click('#next2'); await pg3.wait_for_timeout(150)
         out['leap_err']=await pg3.inner_text('#err2')
-        await pg3.uncheck('#me-leap'); await pg3.click('.seg.sex button:has-text("여성")'); await pg3.click('#next2'); await pg3.check('#me-hunk'); await pg3.click('#go'); await pg3.wait_for_timeout(5600)
+        await pg3.uncheck('#me-leap'); await pg3.click('.seg.sex button:has-text("여성")'); await pg3.click('#next2'); await pg3.check('#me-hunk'); await pg3.click('#go'); await pg3.wait_for_timeout(9500)
         out['lunar_note']=await pg3.inner_text('#chart-note'); out['say_noname']=await pg3.inner_text('#say-type')
         await pg3.click('#again'); out['again']=await pg3.get_attribute('#bubble-text','data-full')
         out['scrollW']=[await x.evaluate('document.documentElement.scrollWidth') for x in (pg,pg2,pg3)]

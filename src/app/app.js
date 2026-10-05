@@ -38,7 +38,7 @@ let LV = 'mid';   // 사주 아는 정도: new 처음 / mid 조금 / pro 잘 앎
 const ART_IDX = {0: 0, 10: 1, 11: 4, 12: 2, 13: 4, 14: 2, 15: 4, 16: 2, 1: 1, 2: 2, 3: 1, 4: 4, 30: 0, 31: 4, 32: 2, 33: 1, 34: 0, 35: 2, 36: 4, 37: 1, 38: 2};   // 0 인사 1 질문 2 등불 4 사주책
 const DOT_IDX = {0: 0, 10: 0, 11: 0, 12: 0, 13: 0, 14: 0, 15: 0, 16: 0, 1: 1, 2: 2, 3: 3, 4: 3};
 // 처음 설명 컷이 6개로 늘면서(10/5 사용자: "사주가 어떻게 시작된 건지") 기존 녹음 step11~14 → 13~16번 컷에 씀. 11·12번 컷은 아직 녹음 없음
-const AUDIO_OF = {0: null, 11: null, 12: null, 13: 'step11', 14: 'step12', 15: 'step13', 16: 'step14', 30: null, 31: null, 32: null, 33: null, 34: null, 35: null, 36: null, 37: null, 38: null};   // 0번(상담소 인사)·타로는 새로 녹음 전
+const AUDIO_OF = {0: 'home', 4: null, 11: 'g_hist', 12: 'g_joseon', 13: 'step11', 14: 'step12', 15: 'step13', 16: 'step14', 30: 't30', 31: 't31', 32: 't32', 33: 't33', 34: 't34', 35: 't35', 36: 't36', 37: 't37', 38: 't38'};   // 10/5 추가 녹음: 상담소 인사·처음 설명 11·12·타로방
 const EASY_SS = {비견: '나와 같은 편', 겁재: '경쟁자', 식신: '재주', 상관: '표현', 편재: '큰돈', 정재: '월급·저축', 편관: '압박·도전', 정관: '직장·명예', 편인: '촉·공부', 정인: '도움·문서'};
 // 도령 입·눈 위치 (그림 640×640 기준, 10/5 그림에서 잰 값). 0 인사 1 질문 2 등불 4 사주책
 const FX = {
@@ -74,7 +74,7 @@ function callName() { return nick() ? `${nick()}님은` : '그대는'; }   // �
 // ---------- 도령 목소리 (2026-10-05 사용자 선택: 움직임 + 정해진 말은 녹음 + 사람마다 다른 풀이는 기기 목소리) ----------
 // 휴대폰 브라우저는 소리가 저절로 나는 걸 막아서, 사용자가 '목소리 켜기'를 한 번 눌러야 말한다.
 // 10/5 녹음: Gemini TTS 'Puck'(사용자 선택) 목소리, voice/*.mp3. 기기 기본 목소리는 쓰지 않는다 (사용자: 여자·기계 목소리는 도령답지 않음)
-const VKEYS = ['step0', 'step1', 'step2', 'step3', 'step4', 'step10', 'step11', 'step12', 'step13', 'step14', 'ch1', 'ch3', 'ch4', 'ch5', 'ch6', 'ch7', 'ch8', 'ch9',
+const VKEYS = ['home', 'g_hist', 'g_joseon', 'load1', 'load3', 't30', 't31', 't32', 't33', 't34', 't35', 't36', 't37', 't38', 'step1', 'step2', 'step3', 'step4', 'step10', 'step11', 'step12', 'step13', 'step14', 'ch1', 'ch3', 'ch4', 'ch5', 'ch6', 'ch7', 'ch8', 'ch9',
   'a_money', 'a_work', 'a_love', 'a_study', 'a_health', 'a_all', 'il_gap', 'il_eul', 'il_byeong', 'il_jeong', 'il_mu', 'il_gi', 'il_gyeong', 'il_sin', 'il_im', 'il_gye'];
 const RECORDED = Object.fromEntries(VKEYS.map((k) => [k, `voice/${k}.mp3`]));
 const IL_KEY = {갑: 'il_gap', 을: 'il_eul', 병: 'il_byeong', 정: 'il_jeong', 무: 'il_mu', 기: 'il_gi', 경: 'il_gyeong', 신: 'il_sin', 임: 'il_im', 계: 'il_gye'};
@@ -638,17 +638,21 @@ function onSubmit(e) {
   const lis = $$('#load-steps li');
   lis.forEach((li) => li.classList.remove('on', 'now'));
   const quick = reduceMotion();
-  const lines = [`어디 보자~~ 🔍<br>${nick() ? nick() + '님' : '그대'}의 여덟 글자를 펼쳐 보겠소`, '음… 다섯 기운이 어디로 쏠렸나…<br>잠깐만 기다리시오 🤔', '오호, 이건…! ✨<br>재밌는 사주구려!'];
+  const lines = ['어디 보자~~ 🔍<br>여덟 글자를 펼쳐 보겠소', '음… 다섯 기운이 어디로 쏠렸나…<br>잠깐만 기다리시오 🤔', '오호, 이건…! ✨<br>재밌는 사주구려!'];
   const T0 = quick ? 0 : 1;
-  const plan = [[0, () => { typeBubble(lines[0]); lis[0] && lis[0].classList.add('now'); }],
-    [1100, () => { lis[0] && lis[0].classList.replace('now', 'on'); lis[1] && lis[1].classList.add('now'); }],
-    [1900, () => { typeBubble(lines[1]); lis[1] && lis[1].classList.replace('now', 'on'); lis[2] && lis[2].classList.add('now'); }],
-    [3000, () => { lis[2] && lis[2].classList.replace('now', 'on'); lis[3] && lis[3].classList.add('now'); }],
-    [3700, () => { typeBubble(lines[2]); lis[3] && lis[3].classList.replace('now', 'on'); const r = $('#rig'); r.classList.remove('hop'); void r.offsetWidth; r.classList.add('hop'); }],
-    [4900, () => {
-      if (stepNow !== 4) return;
-      try { render(P, dt); } catch (err) { goStep(3); $('#err').textContent = '계산하지 못했어요. 입력을 확인해 주세요.'; }
-    }]];
+  const talk = voice.on && !quick;   // 목소리가 켜져 있으면 녹음 길이에 맞춰 조금 더 기다린다 (어디 보자 4.6초 + 오호 3.7초)
+  const line = (i, key) => { const au = key ? say('', $('.scene'), key) : null; typeBubble(lines[i], au); };
+  const tick = (k) => { lis[k - 1] && lis[k - 1].classList.replace('now', 'on'); lis[k] && lis[k].classList.add('now'); };
+  const hop = () => { const r = $('#rig'); r.classList.remove('hop'); void r.offsetWidth; r.classList.add('hop'); };
+  const finish = () => {
+    if (stepNow !== 4) return;
+    try { render(P, dt); } catch (err) { goStep(3); $('#err').textContent = '계산하지 못했어요. 입력을 확인해 주세요.'; }
+  };
+  const plan = talk
+    ? [[0, () => { line(0, 'load1'); lis[0] && lis[0].classList.add('now'); }], [1200, () => tick(1)], [2400, () => tick(2)], [3600, () => tick(3)],
+      [4900, () => { line(2, 'load3'); tick(4); hop(); }], [9000, finish]]
+    : [[0, () => { line(0); lis[0] && lis[0].classList.add('now'); }], [1100, () => tick(1)], [1900, () => { line(1); tick(2); }], [3000, () => tick(3)],
+      [3700, () => { line(2); tick(4); hop(); }], [4900, finish]];
   plan.forEach(([ms, fn]) => setTimeout(fn, ms * T0));
 }
 
@@ -931,9 +935,16 @@ window.addEventListener('DOMContentLoaded', () => {
     }, reduceMotion() ? 0 : 450);
     setTimeout(() => door.classList.add('gone'), reduceMotion() ? 0 : 1200);
   };
-  door.addEventListener('click', openDoor);
-  door.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') openDoor(); });
-  setTimeout(openDoor, reduceMotion() ? 0 : 1700);
+  // 휴대폰은 화면을 한 번 눌러야 소리가 나서, 문을 톡 누르면 도령 목소리를 켠다 (전에 목소리를 끈 사람은 그대로 꺼 둠)
+  const tapDoor = () => {
+    let off = false;
+    try { off = localStorage.getItem('ibul-voice') === '0'; } catch (e) { /* 무시 */ }
+    if (VOICE_READY && !off && !voice.on) setVoice(true);
+    openDoor();
+  };
+  door.addEventListener('click', tapDoor);
+  door.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') tapDoor(); });
+  setTimeout(openDoor, reduceMotion() ? 0 : 4000);
 });
 
 // 시험용 (자동 검사에서만 씀)
