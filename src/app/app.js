@@ -169,15 +169,9 @@ function typeBubble(html, au) {
     }, ms);
   };
   if (!au) { run(42); return; }
-  let started = false;
-  const go = () => {
-    if (started) return; started = true; clearTimeout(fb);
-    const d = au.duration;
-    run(isFinite(d) && d > 0 ? Math.max(28, Math.min(150, (d * 1000 * 0.92) / plain.length)) : 42);
-  };
-  const fb = setTimeout(go, 1800);   // 소리가 늦거나 막히면 그냥 시작
-  au.addEventListener('playing', go, {once: true});
-  au.addEventListener('nogo', go, {once: true});
+  // 10/6 사용자: "자막 먼저 다 보여주고 멘트를 하면 되는데" → 녹음이 있으면 글자를 한 번에 다 보여 주고 바로 말한다 (입은 소리 나는 동안 움직임)
+  el.innerHTML = html;
+  setTalk('type', false);
 }
 
 // ---------- 웹툰 단계 ----------
