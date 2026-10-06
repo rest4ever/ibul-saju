@@ -305,6 +305,11 @@ export function initTarot(goStep, say, face, speak) {
   $('#t-confirm').addEventListener('click', () => { if (T.picks.length === spread().n) { goStep(38); consult(); } });
   $('#t-again').addEventListener('click', () => { RUN += 1; T.order = []; $('#t-shuf').textContent = '카드 섞기 시작 🔀'; $$('.t-pile').forEach((p) => p.classList.remove('chosen')); goStep(33); });
 }
+export function stopTarot() {
+  RUN += 1;
+  if (skip) skip();
+  const r = $('#t-reply'); if (r) { r.hidden = true; r.innerHTML = ''; r.onclick = null; }
+}
 export function enterTarot() {
   RUN += 1; T.order = []; T.picks = []; T.sit = null;
   const sp = spread();

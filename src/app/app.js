@@ -1,7 +1,7 @@
 import {calculateFourPillars, lunarToSolar} from 'manseryeok';   // 10/5 엔진 교체: 절입 '시각' 기준 (이전 라이브러리는 날짜 0시 기준이라 절기 날 일부가 틀렸음)
 import * as AN from './analysis.js';
 import * as TD from './texts_detail.js';
-import {initTarot, enterTarot, tarotBubble} from './tarot.js';
+import {initTarot, enterTarot, tarotBubble, stopTarot} from './tarot.js';
 import {markTerms, initGloss} from './glossary.js';
 import {ILGAN, YEAR2027, EL, GUNGHAP, AREA2027, SPOUSE2027} from './texts.js';
 import {ART} from './art.js';
@@ -90,9 +90,24 @@ function speakable(t) {
   return String(t).replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]*>/g, '')
     .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}]/gu, '').replace(/~+/g, '').replace(/\s+/g, ' ').trim();
 }
+// 10/6 사용자: "뒤로 가면 바로 끊기고 자연스럽게" → 소리는 하나의 재생기로만 낸다.
+// 새 말을 하거나 화면을 옮기면 앞 소리는 그 자리에서 바로 멈추고, 휴대폰(아이폰)에서도 늦게 시작한 앞 소리가 뒤늦게 나오지 않는다.
+// 첫 터치(문 열기)에서 이 재생기가 풀리면, 그 뒤 타로 상담처럼 터치 없이 이어지는 말도 소리가 난다.
+const player = new Audio();
+player.preload = 'auto';
+let curLine = null;   // 지금 말하는 줄 (이벤트를 이 줄에만 전한다)
+function endLine(type) {
+  const h = curLine; curLine = null;
+  if (h) h.dispatchEvent(new Event(type));
+}
+player.addEventListener('playing', () => { if (curLine) curLine.dispatchEvent(new Event('playing')); });
+player.addEventListener('ended', () => endLine('ended'));
+player.addEventListener('error', () => { if (player.getAttribute('src')) endLine('nogo'); });
 function stopTalk() {
   try { if ('speechSynthesis' in window) speechSynthesis.cancel(); } catch (e) { /* 무시 */ }
-  if (voice.audio) { voice.audio.pause(); voice.audio = null; }
+  try { player.pause(); } catch (e) { /* 무시 */ }
+  endLine('nogo');
+  voice.audio = null;
   $$('.talking').forEach((el) => el.classList.remove('talking'));
   talkFlags.audio = false;
 }
@@ -104,10 +119,18 @@ function say(text, el, key) {
   const on = () => (isScene ? setTalk('audio', true) : target.classList.add('talking'));
   const done = () => (isScene ? setTalk('audio', false) : target.classList.remove('talking'));
   if (key && RECORDED[key]) {
-    const au = new Audio(RECORDED[key]);
-    voice.audio = au; au.onplay = on; au.onended = done; au.onerror = () => { done(); au.dispatchEvent(new Event('nogo')); };
-    au.play().catch(() => { done(); au.dispatchEvent(new Event('nogo')); });
-    return au;
+    const h = new EventTarget();
+    h.src = RECORDED[key];
+    h.pause = () => { if (curLine === h) stopTalk(); };
+    h.addEventListener('playing', on);
+    h.addEventListener('ended', done);
+    h.addEventListener('nogo', done);
+    curLine = h; voice.audio = h;
+    player.src = RECORDED[key];
+    try { player.currentTime = 0; } catch (e) { /* 무시 */ }
+    const pr = player.play();
+    if (pr && pr.catch) pr.catch(() => { if (curLine === h) endLine('nogo'); });
+    return h;
   }
   return null;   // 녹음이 없는 말은 소리 없이 넘어간다
 }
@@ -198,6 +221,7 @@ let stepNow = 0;
 function goStep(n) {
   stepNow = n;
   const room = n === 0 ? 'home' : n >= 30 ? 'tarot' : 'saju';
+  if (room !== 'tarot') stopTarot();   // 타로 상담 중에 나가면 대화·목소리를 바로 멈춘다
   document.body.classList.toggle('room-tarot', room === 'tarot');
   $('#top-title').textContent = room === 'home' ? '🏮 이불 속 고민 상담소' : room === 'tarot' ? '🃏 이불 속 타로방' : '📜 이불 속 사주방';
   $('#home-btn').hidden = room === 'home';
@@ -990,4 +1014,4 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 // 시험용 (자동 검사에서만 씀)
-window.__saju = {pillarsOf, countEl, relation, readInvite, goStep, speakable, voice, sipsin, showChap: (n) => { chMax = 9; showChap(n); }};
+window.__saju = {player, pillarsOf, countEl, relation, readInvite, goStep, speakable, voice, sipsin, showChap: (n) => { chMax = 9; showChap(n); }};
