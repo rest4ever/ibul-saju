@@ -75,7 +75,7 @@ function callName() { return nick() ? `${nick()}님은` : '그대는'; }   // �
 // ---------- 도령 목소리 (2026-10-05 사용자 선택: 움직임 + 정해진 말은 녹음 + 사람마다 다른 풀이는 기기 목소리) ----------
 // 휴대폰 브라우저는 소리가 저절로 나는 걸 막아서, 사용자가 '목소리 켜기'를 한 번 눌러야 말한다.
 // 10/5 녹음: Gemini TTS 'Puck'(사용자 선택) 목소리, voice/*.mp3. 기기 기본 목소리는 쓰지 않는다 (사용자: 여자·기계 목소리는 도령답지 않음)
-const VKEYS = ['ask_saju', 'ask_tarot', 'ask_no', 'year_ask', 'tc_start', 'tc_flip', 'tc_more', 'tc_flow', 'tc_advice', 'tc_end', 'tc_c0', 'tc_c1', 'tc_c2', 'tc_c3', 'tc_c4', 'tc_c5', 'tc_c6', 'tc_c7',   // 10/6 녹음 (카드 이름 8~21번은 다음 녹음)
+const VKEYS = ['ask_saju', 'ask_tarot', 'ask_no', 'year_ask', 'tc_start', 'tc_flip', 'tc_more', 'tc_flow', 'tc_advice', 'tc_end', 'tc_c0', 'tc_c1', 'tc_c2', 'tc_c3', 'tc_c4', 'tc_c5', 'tc_c6', 'tc_c7', 'tc_c8', 'tc_c9', 'tc_c10', 'tc_c11', 'tc_c12', 'tc_c13', 'tc_c14', 'tc_c15', 'tc_c16', 'tc_c17', 'tc_c18', 'tc_c19', 'tc_c20', 'tc_c21',   // 10/6 녹음 (카드 이름 22장 모두)
   'home_s', 'home', 'g_hist', 'g_joseon', 'load1', 'load3', 't30', 't31', 't32', 't33', 't34', 't35', 't36', 't37', 't38', 'step1', 'step2', 'step3', 'step4', 'step10', 'step11', 'step12', 'step13', 'step14', 'ch1', 'ch3', 'ch4', 'ch5', 'ch6', 'ch7', 'ch8', 'ch9',
   'a_money', 'a_work', 'a_love', 'a_study', 'a_health', 'a_all', 'il_gap', 'il_eul', 'il_byeong', 'il_jeong', 'il_mu', 'il_gi', 'il_gyeong', 'il_sin', 'il_im', 'il_gye'];
 const RECORDED = Object.fromEntries(VKEYS.map((k) => [k, `voice/${k}.mp3`]));
