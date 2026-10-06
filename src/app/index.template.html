@@ -186,6 +186,7 @@ body[data-lv="new"] .lv-switch [data-lv="new"],body[data-lv="mid"] .lv-switch [d
 .t-topic{margin:0;padding:10px 8px;font-size:16px;background:#fff;color:var(--ink);box-shadow:0 3px 0 #D9CCB0;border:2px solid #E6D9BE}
 .t-topic small{display:block;font-family:var(--body);font-weight:400;font-size:12px;color:var(--sub)}
 .t-topic.on{border-color:var(--gold);background:#FFF4D6}
+.t-sit{font-size:16px;padding:12px 8px}.t-sit:last-child{grid-column:1/-1;background:#F6EFE0}
 .t-deck{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:10px}
 .t-back,.t-b{display:block;aspect-ratio:2/3;border-radius:8px;background:radial-gradient(circle at 50% 42%,#F6E7B8 0 9%,transparent 10%),radial-gradient(circle at 56% 38%,#2A2650 0 9%,transparent 10%),repeating-linear-gradient(45deg,#2A2650 0 6px,#332D63 6px 12px);border:2px solid var(--gold);box-shadow:0 2px 0 #17143A}
 .t-back{margin:0;padding:0;width:100%;cursor:pointer;transition:transform .25s cubic-bezier(0,0,0,1),opacity .25s}
@@ -507,6 +508,12 @@ d.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' ')open();
         <div class="row"><input id="t-q" maxlength="40" placeholder="예: 이번 달 이직 준비, 어떻게 하면 좋을까?"></div>
         <p class="tip lv-tnew">💡 질문은 "될까? 안 될까?"보다 "어떻게 하면 좋을까?"처럼 물어야 풀이가 잘 맞아요. 질문 하나에 카드 한 번!</p>
         <button type="button" id="t-q-next">다음</button>
+      </div>
+      <div class="panel" data-step="39" hidden>
+        <label>지금 그대 상황은 어떻소?</label>
+        <div class="t-topics" id="t-sits"></div>
+        <p class="tip lv-tnew">💡 실제 타로 상담에서도 카드를 펴기 전에 상황부터 들어요. 같은 카드라도 지금 처한 상황에 따라 읽는 방향이 달라지거든요. 말하기 싫으면 "말 안 할래요"를 골라도 돼요.</p>
+        <button type="button" id="t-sit-next" disabled>다음</button>
       </div>
       <div class="panel" data-step="34" hidden>
         <div class="breath"><i></i><span>들이쉬고… 내쉬고…</span></div>

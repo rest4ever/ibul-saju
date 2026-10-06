@@ -26,6 +26,7 @@ with sync_playwright() as p:
     pg.click('[data-step="31"] [data-tnext="32"]'); pg.wait_for_timeout(1500); pg.screenshot(path='n_t32.png')
     pg.click('[data-step="32"] [data-tnext="33"]'); pg.wait_for_timeout(300)
     pg.click('.t-topic[data-t="love"]'); pg.fill('#t-q','우리 관계 어떻게 하면 좋을까?'); pg.click('#t-q-next'); pg.wait_for_timeout(300)
+    out['t39']=pg.get_attribute('#bubble-text','data-full'); out['sit_n']=pg.locator('.t-sit').count(); out['sit_next_disabled']=pg.is_disabled('#t-sit-next'); pg.screenshot(path='n_t39.png'); pg.locator('.t-sit').nth(2).click(); pg.click('#t-sit-next'); pg.wait_for_timeout(300)
     pg.click('[data-step="34"] [data-tnext="35"]'); pg.wait_for_timeout(300)
     pg.click('#t-shuf'); pg.wait_for_timeout(800); pg.screenshot(path='n_t35.png'); pg.click('#t-shuf'); pg.wait_for_timeout(400)
     pg.screenshot(path='n_t36.png'); pg.locator('.t-pile').nth(1).click(); pg.wait_for_timeout(1000)
@@ -37,7 +38,7 @@ with sync_playwright() as p:
     pg.click('#t-confirm'); pg.wait_for_timeout(500)
     out['door_gone']=pg.evaluate("document.getElementById('door').classList.contains('gone')")
     steps=[]; more_done=False
-    for it in range(120):
+    for it in range(220):
         if pg.is_visible('#t-end'): break
         chips=pg.locator('#t-reply .chip')
         if pg.is_visible('#t-reply') and chips.count():
@@ -54,5 +55,6 @@ with sync_playwright() as p:
     out['chat_tail']=[pg.locator('#t-chat .msg').nth(i).inner_text()[:90] for i in range(max(0,out['chat_n']-6),out['chat_n'])]
     out['end_dbg']=pg.evaluate("[document.getElementById('t-end').hidden, getComputedStyle(document.getElementById('t-end')).display, document.querySelector('[data-step=\"38\"]').hidden]"); out['end_visible']=pg.is_visible('#t-end'); pg.screenshot(path='n_t38.png',full_page=True)
     out['btn_heights']=pg.evaluate("[...document.querySelectorAll('#t-end button,#t-reply button')].map(b=>Math.round(b.getBoundingClientRect().height))")
+    out['chat_all']=[pg.locator('#t-chat .msg').nth(i).inner_text()[:80] for i in range(pg.locator('#t-chat .msg').count())]
     out['scrollW']=pg.evaluate('document.documentElement.scrollWidth'); out['errs']=errs
     print(json.dumps(out,ensure_ascii=False,indent=1)); b.close()

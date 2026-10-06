@@ -1,4 +1,4 @@
-import {TAROT, SPREADS, SYMBOL, TONE} from './tarot_texts.js';
+import {TAROT, SPREADS, SYMBOL, TONE, SITUATIONS} from './tarot_texts.js';
 
 // 이불 속 타로방 — 실제로 보는 순서대로 한 단계씩 (10/5 사용자: "실제로 보는 것처럼 스텝 바이 스텝, 모르는 거 다 설명")
 // 단계: 30 처음/해봄 → 31 타로란? → 32 진행 순서 → 33 질문 → 34 마음 가라앉히기 → 35 섞기 → 36 커트 → 37 고르기 → 38 공개·풀이
@@ -16,7 +16,7 @@ const POS_DESC = {
   three: ['지금 상황을 만든 배경이에요.', '지금 가장 중요하게 작용하는 기운이에요.', '이대로 가면 펼쳐질 흐름이에요. 정해진 미래가 아니라 "지금 방향"이에요.'],
   love: ['내가 이 관계에서 바라는 것, 내 속마음이에요.', '상대가 보여 주는 기운이에요. 어디까지나 짐작이니 단정하지는 말기!', '둘 사이가 흘러가는 방향이에요.'],
 };
-let T = {topic: 'today', q: '', order: [], picks: [], shuffling: null, goStep: null, face: ''};
+let T = {topic: 'today', q: '', sit: null, order: [], picks: [], shuffling: null, goStep: null, face: ''};
 
 function rnd(n) { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] % n; }
 function shuffleOnce() {
@@ -30,7 +30,29 @@ function faceHTML(k) {
   const art = READY.has(k) ? `<img src="tarot/card${pad(k)}.webp" alt="${name} 카드" loading="lazy">` : `<div class="t-wip"><span>🌙</span><small>그림 준비 중</small></div>`;
   return `${art}<div class="t-rib"><b>${name}</b><small>${k} · ${en}</small></div>`;
 }
-const spread = () => SPREADS[TOPIC[T.topic].spread];
+// 10/6 상황 묻기: 연애 주제는 상황에 따라 3장 자리 이름·설명이 바뀐다
+const POS_DESC_SIT = {
+  dating: ['내가 이 관계에서 바라는 것, 내 속마음이에요.', '연인이 보여 주는 기운이에요. 어디까지나 짐작이니 단정하지는 말기!', '두 사람이 흘러가는 방향이에요.'],
+  single: ['내가 바라는 사랑의 모습이에요.', '다가올 인연이 가진 기운이에요. 어디까지나 짐작!', '새 인연이 흘러가는 방향이에요.'],
+  after: ['지금 내 마음 상태예요.', '그 사람 쪽에서 느껴지는 기운이에요. 어디까지나 짐작이니 단정하지는 말기!', '다시 이어질지, 어떤 흐름인지예요.'],
+};
+const sitOf = () => (T.sit && T.sit.id !== 'none' ? T.sit : null);
+const spread = () => {
+  const base = SPREADS[TOPIC[T.topic].spread];
+  const st = sitOf();
+  return st && st.pos && T.topic === 'love' ? {...base, pos: st.pos} : base;
+};
+const posDesc = (j) => {
+  const st = sitOf();
+  if (st && T.topic === 'love' && POS_DESC_SIT[st.id]) return POS_DESC_SIT[st.id][j];
+  return POS_DESC[TOPIC[T.topic].spread][j];
+};
+function renderSits() {
+  const list = SITUATIONS[T.topic] || [];
+  T.sit = null;
+  $('#t-sits').innerHTML = list.map((x, i) => `<button type="button" class="t-topic t-sit" data-i="${i}">${x.label}</button>`).join('');
+  $('#t-sit-next').disabled = true;
+}
 
 // 35 섞기
 function startShuffle() {
@@ -172,7 +194,10 @@ const FIELD_NAME = {3: '기본 뜻으로', 4: '연애로', 5: '일·돈으로'};
 const io = (w) => { const c = w.charCodeAt(w.length - 1) - 0xAC00; return w + (c >= 0 && c < 11172 && c % 28 ? '이오' : '요'); };
 function topicLine(k, j) {
   const tp = TOPIC[T.topic], C = TAROT[k];
-  if (T.topic === 'love' && j === 1) return `상대 쪽 자리라 어디까지나 짐작이오. 이 카드로 보면 상대는… ${C[4]}`;
+  if (T.topic === 'love' && j === 1) {
+    const who = sitOf() && sitOf().id === 'single' ? ['다가올 인연', '그 사람은'] : sitOf() && sitOf().id === 'after' ? ['그 사람 쪽', '그 사람은'] : sitOf() && sitOf().id === 'dating' ? ['연인 쪽', '연인은'] : ['상대 쪽', '상대는'];
+    return `${who[0]} 자리라 어디까지나 짐작이오. 이 카드로 보면 ${who[1]}… ${C[4]}`;
+  }
   if (tp.field === 3) return `${T.topic === 'today' ? '오늘 하루에' : '그대 고민에'} 대 보면, ${C[6]}`;
   return C[tp.field];
 }
@@ -180,7 +205,13 @@ function readFlow(ks) {
   const kw = (k) => `“${TAROT[k][2]}”`;
   const nm = (k) => `<b>${TAROT[k][0]}</b>`;
   if (ks.length === 1) return `한 장으로 보는 질문은 그 카드가 곧 답이오. ${nm(ks[0])}의 ${kw(ks[0])} 기운, 이것 하나만 기억해도 충분하오.`;
-  if (T.topic === 'love') return `그대 마음엔 ${nm(ks[0])}의 ${kw(ks[0])}, 상대 쪽엔 ${nm(ks[1])}의 ${kw(ks[1])} 기운이 보이오. 두 기운이 만나 ${nm(ks[2])}, 곧 ${kw(ks[2])} 쪽으로 흘러가고 있소.`;
+  if (T.topic === 'love') {
+    const id = sitOf() ? sitOf().id : '';
+    if (id === 'single') return `그대가 바라는 사랑엔 ${nm(ks[0])}의 ${kw(ks[0])}, 다가올 인연엔 ${nm(ks[1])}의 ${kw(ks[1])} 기운이 보이오. 새 인연은 ${nm(ks[2])}, 곧 ${kw(ks[2])} 쪽으로 흘러가고 있소.`;
+    if (id === 'after') return `그대 마음엔 ${nm(ks[0])}의 ${kw(ks[0])}, 그 사람 쪽엔 ${nm(ks[1])}의 ${kw(ks[1])} 기운이 보이오. 다시 이어질지는 ${nm(ks[2])}, 곧 ${kw(ks[2])} 쪽으로 흘러가고 있소.`;
+    const other = id === 'dating' ? '연인 쪽엔' : '상대 쪽엔';
+    return `그대 마음엔 ${nm(ks[0])}의 ${kw(ks[0])}, ${other} ${nm(ks[1])}의 ${kw(ks[1])} 기운이 보이오. 두 기운이 만나 ${nm(ks[2])}, 곧 ${kw(ks[2])} 쪽으로 흘러가고 있소.`;
+  }
   return `지나온 ${nm(ks[0])}의 ${kw(ks[0])} 위에서, 지금은 ${nm(ks[1])}의 ${kw(ks[1])}에 힘을 싣는 게 열쇠요. 그러면 앞으로 ${nm(ks[2])}의 ${kw(ks[2])} 쪽으로 이어지기 쉽소.`;
 }
 function toneLine(ks) {
@@ -204,12 +235,13 @@ async function consult() {
   $('#t-map').innerHTML = mapHTML(ks, 0);
   try {
     await dl(T.q ? `그대가 가져온 질문은 이것이었소.<br><b>“${T.q}”</b>` : `오늘 주제는 <b>${io(tp.label)}</b>.`);
+    if (sitOf()) await dl(`그대 상황은 <b>${sitOf().label.replace(/^\S+\s/, '')}</b>. 이 상황에 맞춰 읽어 드리리다.`);
     await dl('자, 그대가 고른 카드를 같이 보겠소. 실제 상담처럼, 한 장씩 뒤집으며 읽어 보리다.', '', 'tc_start');
     await dl(sp.n === 1 ? '고른 카드는 한 장이오.' : `고른 카드는 세 장, 자리는 <b>${sp.pos.join(' → ')}</b> 순서요.`);
     if (newbie) await dl('💡 카드 읽는 순서를 알려 드리리다.<br>① 이 자리가 무슨 뜻인지 → ② 그림에 뭐가 있는지 → ③ 카드의 뜻 → ④ 그대 질문에 대 보기. 이 순서만 알면 타로 반은 아는 거요!', 'tip');
     for (let j = 0; j < ks.length; j += 1) {
       const k = ks[j], C = TAROT[k];
-      await dl(`${sp.n > 1 ? `${j + 1}번째 자리는 <b>${sp.pos[j]}</b>요. ` : ''}${POS_DESC[tp.spread][j]}`);
+      await dl(`${sp.n > 1 ? `${j + 1}번째 자리는 <b>${io(sp.pos[j])}</b>. ` : ''}${posDesc(j)}`);
       const card = cardMsg(k, j);
       T.say(`${sp.n > 1 ? `${j + 1}번째, "${sp.pos[j]}" 카드요.<br>` : ''}마음의 준비가 되면 뒤집으시오 🃏`);
       if (T.speak) T.speak('tc_flip');
@@ -221,6 +253,7 @@ async function consult() {
       await dl(`🖼 그림부터 보시오. 전통 타로 그림에서는 ${SYMBOL[k]}`, '', `tc_s${k}`);
       await dl(`🔑 핵심어는 <b>${C[2]}</b>. ${C[3]}`);
       await dl(`🔮 ${topicLine(k, j)}`, 'key');
+      if (sitOf()) await dl(`👉 ${sitOf().line[TONE[k]]}`, 'key');
       const others = [3, 4, 5].filter((f) => f !== tp.field && !(f === 3 && tp.field !== 3));
       const more = await ask([{label: j < ks.length - 1 ? '다음 카드 볼래요 →' : '흐름 정리해 주세요 →', v: 'next'}, {label: '이 카드 더 알려 주세요', v: 'more'}]);
       if (more === 'more') {
@@ -235,6 +268,10 @@ async function consult() {
     await dl(readFlow(ks), 'key');
     await dl(`⚖️ ${toneLine(ks)}`);
     const keyK = ks.length === 1 ? ks[0] : T.topic === 'love' ? ks[2] : ks[1];
+    if (sitOf()) {
+      const sum = ks.reduce((a, k) => a + TONE[k], 0);
+      await dl(`👉 그대 상황(<b>${sitOf().label.replace(/^\S+\s/, '')}</b>)으로 정리하면, ${sitOf().end[sum > 0 ? 1 : sum < 0 ? -1 : 0]}`, 'key');
+    }
     await dl('마지막으로, 도령의 조언이오.', '', 'tc_advice');
     await dl(`🍀 <b>도령의 조언</b><br>${TAROT[keyK][6]}`, 'advice');
     await dl('타로는 정해진 미래가 아니라 <b>지금 마음을 비추는 거울</b>이오. 마음에 남은 한 줄만 챙겨 가시오. 또 고민이 생기면 언제든 문 두드리시오 🏮', '', 'tc_end');
@@ -254,7 +291,14 @@ export function initTarot(goStep, say, face, speak) {
     const sp = spread();
     $('#t-spread-note').textContent = `${sp.n}장을 뽑아요: ${sp.pos.join(' → ')}`;
   }));
-  $('#t-q-next').addEventListener('click', () => { T.q = ($('#t-q').value || '').replace(/[<>&"']/g, '').trim().slice(0, 40); goStep(34); });
+  $('#t-q-next').addEventListener('click', () => { T.q = ($('#t-q').value || '').replace(/[<>&"']/g, '').trim().slice(0, 40); renderSits(); goStep(39); });
+  $('#t-sits').addEventListener('click', (e) => {
+    const b = e.target.closest('.t-sit'); if (!b) return;
+    T.sit = (SITUATIONS[T.topic] || [])[+b.dataset.i] || null;
+    $$('.t-sit').forEach((x) => x.classList.toggle('on', x === b));
+    $('#t-sit-next').disabled = !T.sit;
+  });
+  $('#t-sit-next').addEventListener('click', () => { if (T.sit) goStep(34); });
   $('#t-shuf').addEventListener('click', () => (T.shuffling ? stopShuffle() : startShuffle()));
   $$('.t-pile').forEach((p, i) => p.addEventListener('click', () => cut(i)));
   $('#t-deck').addEventListener('click', (e) => { const b = e.target.closest('.t-back'); if (b) togglePick(+b.dataset.i); });
@@ -262,7 +306,7 @@ export function initTarot(goStep, say, face, speak) {
   $('#t-again').addEventListener('click', () => { RUN += 1; T.order = []; $('#t-shuf').textContent = '카드 섞기 시작 🔀'; $$('.t-pile').forEach((p) => p.classList.remove('chosen')); goStep(33); });
 }
 export function enterTarot() {
-  RUN += 1; T.order = []; T.picks = [];
+  RUN += 1; T.order = []; T.picks = []; T.sit = null;
   const sp = spread();
   $('#t-spread-note').textContent = `${sp.n}장을 뽑아요: ${sp.pos.join(' → ')}`;
   $('#t-shuf').textContent = '카드 섞기 시작 🔀';
@@ -279,5 +323,6 @@ export function tarotBubble(n) {
     36: '섞은 카드를 세 더미로 나눴소.<br>끌리는 더미 하나를 골라 보시오 ✋',
     37: `카드를 펼쳤소! 끌리는 카드 ${sp.n}장을 골라 보시오.<br>잘못 골랐으면 다시 눌러 취소하면 되오`,
     38: '좋소, 이제 상담을 시작하겠소.<br>아래 대화를 따라오시오 🏮',
+    39: '카드를 펴기 전에 하나만 묻겠소.<br>지금 그대 상황은 어떻소? 🍵',
   }[n];
 }
