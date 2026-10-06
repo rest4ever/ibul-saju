@@ -4,7 +4,7 @@ import {TAROT, SPREADS, SYMBOL, TONE} from './tarot_texts.js';
 // 단계: 30 처음/해봄 → 31 타로란? → 32 진행 순서 → 33 질문 → 34 마음 가라앉히기 → 35 섞기 → 36 커트 → 37 고르기 → 38 공개·풀이
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => Array.from(document.querySelectorAll(s));
-const READY = new Set([...Array(18).keys()]);   // 그림이 있는 카드 (18~21번은 그림 준비 중)
+const READY = new Set([...Array(22).keys()]);   // 22장 모두 그림 있음 (10/6 18~21번 추가, 5·13번 글자 없는 그림으로 교체)
 export const TOPIC = {
   today: {label: '오늘의 운세', spread: 'one', field: 3},
   love: {label: '연애·속마음', spread: 'love', field: 4},
