@@ -9,14 +9,14 @@
 <meta property="og:description" content="도령의 사주 · 타로 상담 · 2027 신년운">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Jua&family=Sunflower:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
 /* 레이아웃: 폰 폭 440px, 위는 웹툰처럼 캐릭터 + 말풍선, 아래는 한지 패널. 밤 방 안 + 한지 + 금빛 등불 */
 :root{
   --night:#1E1B3A; --night2:#2A2650; --hanji:#F6EFE0; --hanji2:#EDE2CB; --ink:#2B2522; --sub:#6E6255;
   --bamboo:#2F5D4A; --gold:#D9A441; --gold2:#F1C873; --rose:#E8A9B4; --line:#DCCFB5; --moon:#CFC6E8;
-  --talk:"Sunflower", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; --title:"Jua", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; --body:"Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --talk:"Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;   /* 10/6 사용자: 말풍선은 프리텐다드가 더 좋음 → E(해바라기) 되돌림 */ --title:"Jua", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; --body:"Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   color-scheme: dark;
 }
 *{box-sizing:border-box}
@@ -118,9 +118,7 @@ footer b{color:#F6EFE0}
 .top{position:relative}.home-btn{z-index:3;position:absolute;left:0;top:50%;transform:translateY(-50%);width:auto;margin:0;padding:8px 13px;font-family:var(--body);font-weight:700;font-size:13px;border-radius:999px;background:#2A2650;color:#CFC6E8;box-shadow:none;border:1.5px solid #4A4478;min-height:36px}
 .rooms{display:flex;flex-direction:column;gap:10px}
 select.ask{border-color:var(--gold);box-shadow:0 0 0 3px rgba(217,164,65,.45)}
-/* 10/5 사용자: 말풍선 글씨체 E(해바라기) */
-#bubble-text,.msg.d .tx,.talk .say{font-family:var(--talk);font-weight:500}
-#bubble-text b,.msg.d .tx b,.talk .say b{font-weight:700}
+#bubble-text,.msg.d .tx,.talk .say{font-family:var(--talk)}
 .msg.big .tx{font-family:var(--title);font-weight:400}
 .ytype{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:14px;color:var(--sub)}
 .ytype label{margin:0;font-weight:700;font-size:14px;color:var(--sub);white-space:nowrap}
