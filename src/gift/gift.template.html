@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>이불 속 선물방</title>
+<meta name="description" content="받을 사람 생일만 넣으면 사주로 운 트이는 선물을 골라 드려요. 내 생일로 선물 조르기 링크도 만들 수 있어요. 생일은 저장하지 않아요.">
+<meta property="og:title" content="이불 속 선물방 🎁">
+<meta property="og:description" content="사주로 고르는 운 트이는 선물 · 선물 조르기 링크">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{
+  --night:#1E1B3A; --night2:#2A2650; --hanji:#F6EFE0; --hanji2:#EDE2CB; --ink:#2B2522; --sub:#6E6255;
+  --bamboo:#2F5D4A; --gold:#D9A441; --gold2:#F1C873; --rose:#E8A9B4; --line:#DCCFB5; --red:#C8463A;
+  --talk:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif; --title:"Jua","Apple SD Gothic Neo",sans-serif; --body:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{background:var(--night)}
+body{margin:0;background:var(--night);background-image:radial-gradient(rgba(246,231,184,.30) 1px,transparent 1.5px);background-size:38px 38px;color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-text-size-adjust:100%}
+.wrap{max-width:440px;margin:0 auto;padding-inline:16px;padding-block:0 60px}
+.top{text-align:center;padding-block:18px 10px;color:var(--gold2);font-family:var(--title);font-size:21px}
+.top small{display:block;font-family:var(--body);font-size:13px;color:#BDB4E0}
+.scene{position:relative;border-radius:22px;overflow:hidden;background:linear-gradient(180deg,#2A2650 0%,#3A3168 70%,#4A3B6E 100%);border:2px solid #3E3770;aspect-ratio:16/11}
+.scene img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%}
+.bubble{position:relative;margin:-40px 12px 0;background:#fff;color:var(--ink);border-radius:20px;padding:12px 18px 14px;font-family:var(--talk);font-size:17px;line-height:1.55;box-shadow:0 10px 24px rgba(0,0,0,.35);border:2px solid var(--ink);color-scheme:light}
+.bubble::before{content:"";position:absolute;top:-24px;left:44px;border:12px solid transparent;border-bottom-color:var(--ink)}
+.bubble::after{content:"";position:absolute;top:-19px;left:46px;border:10px solid transparent;border-bottom-color:#fff}
+.bubble b{color:var(--bamboo)}
+.who{font-family:var(--title);font-size:13px;color:var(--gold)}
+.panel,.card{margin-top:16px;background:var(--hanji);border-radius:20px;padding:18px;box-shadow:0 8px 20px rgba(0,0,0,.25);color-scheme:light}
+h2{font-family:var(--title);font-weight:400;font-size:22px;margin:0 0 6px}
+label,.q{display:block;font-weight:700;margin:16px 0 8px}
+.row{display:flex;gap:8px}
+select,input{flex:1;min-width:0;font:inherit;padding:11px 10px;border:2px solid var(--line);border-radius:12px;background:#FFFDF8;color:var(--ink)}
+select.ask{animation:ask .4s 4;border-color:var(--red)}
+@keyframes ask{50%{transform:translateX(4px)}}
+.ytype{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:14px;color:var(--sub)}
+.ytype label{margin:0;font-weight:400;white-space:nowrap}
+.ytype input{max-width:110px}
+.ytype input.bad{border-color:var(--red)}
+.seg,.chips{display:flex;flex-wrap:wrap;gap:6px}
+.seg{background:var(--hanji2);border-radius:12px;padding:4px;flex-wrap:nowrap}
+.seg button{flex:1;margin:0;padding:9px;min-height:40px;border-radius:9px;background:transparent;color:var(--sub);font-family:var(--body);font-size:16px;box-shadow:none}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.chips button{width:auto;flex:1 1 auto;margin:0;min-height:44px;padding:8px 14px;border-radius:999px;background:#FFFDF8;color:var(--ink);border:2px solid var(--line);box-shadow:none;font-family:var(--body);font-size:16px}
+.chips button.on{background:var(--night);border-color:var(--night);color:var(--gold2);font-weight:700}
+.check{display:flex;align-items:center;gap:8px;margin-top:10px}
+.check input{flex:none;width:20px;height:20px;accent-color:var(--bamboo)}
+.check label{margin:0;font-weight:400}
+.hint{font-size:13px;color:var(--sub);margin:8px 0 0}
+button{font:inherit;font-family:var(--title);font-size:18px;line-height:1.25;border:0;border-radius:14px;padding:13px 16px;min-height:52px;width:100%;margin-top:14px;cursor:pointer;background:var(--gold);color:var(--ink);box-shadow:0 4px 0 #A9792A}
+button:active{transform:translateY(2px);box-shadow:0 2px 0 #A9792A}
+button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--rose);outline-offset:2px}
+button.ghost{background:transparent;color:var(--sub);box-shadow:none;font-family:var(--body);font-size:15px;padding:8px;margin-top:6px;min-height:44px}
+button.dark{background:var(--bamboo);color:#F6EFE0;box-shadow:0 4px 0 #1E3D30}
+.err{color:#B3261E;font-weight:700;min-height:1em;margin:10px 0 0}
+/* 첫 화면 두 문 */
+.doors{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.door{margin:0;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-radius:20px;background:var(--hanji);box-shadow:0 6px 0 #BFAE8A;color:var(--ink)}
+.door .e{font-size:44px;line-height:1}
+.door b{font-family:var(--title);font-weight:400;font-size:21px}
+.door small{font-family:var(--body);font-size:13px;color:var(--sub);line-height:1.35}
+.door.beg{background:#FBE7EA;box-shadow:0 6px 0 #D9A3AC}
+.safe{color:#BDB4E0;font-size:13px;text-align:center;margin-top:18px}
+/* 불러오기 */
+.load{text-align:center;padding:30px 0;color:var(--gold2);font-family:var(--title);font-size:20px}
+.load .spin{font-size:54px;display:inline-block;animation:wob 1s ease-in-out infinite}
+@keyframes wob{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg) scale(1.08)}}
+/* 결과 */
+.disc{margin-top:14px;background:#2A2650;color:#D8D2F2;font-size:12.5px;border-radius:12px;padding:8px 12px;line-height:1.5}
+.kicker{font-size:13px;color:var(--sub);font-weight:700}
+.type-row{display:flex;align-items:center;gap:12px;margin:6px 0 4px}
+.big-emoji{font-size:48px;line-height:1}
+.type-name{font-family:var(--title);font-size:28px;line-height:1.2}
+.type-sub{color:var(--sub);font-size:14px}
+.type-sub b{color:var(--bamboo)}
+.card p{margin:8px 0 0}
+.tip{background:#FFF8E4;border-radius:10px;padding:8px 10px;font-size:15px}
+#r-el{background:var(--soft);border:3px solid var(--c)}
+.el-big{font-family:var(--title);font-size:26px;color:var(--c);margin-top:4px}
+/* 선물 상자 */
+.boxwrap{position:relative;margin-top:16px}
+.giftbox{position:relative;display:block;width:100%;min-height:240px;margin:0;border-radius:20px;background:var(--hanji);box-shadow:0 8px 20px rgba(0,0,0,.25);padding:26px 0 18px;color:var(--ink)}
+.giftbox .bx{display:block;position:relative;width:150px;height:110px;margin:22px auto 0;background:#D2553F;border-radius:8px}
+.giftbox .bx::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:22px;margin-left:-11px;background:var(--gold2)}
+.giftbox .lid{display:block;position:absolute;left:-10px;right:-10px;top:-30px;height:34px;background:#E46A52;border-radius:8px;transition:transform .55s cubic-bezier(.3,1.6,.5,1),opacity .55s}
+.giftbox .lid::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:22px;margin-left:-11px;background:var(--gold2)}
+.giftbox .lid::after{content:"🎀";position:absolute;left:50%;top:-30px;font-size:38px;transform:translateX(-50%)}
+.giftbox .tap{display:block;font-family:var(--title);font-size:20px;margin-top:18px}
+.giftbox:not(.open) .bx{animation:shake 2.4s ease-in-out infinite}
+@keyframes shake{0%,70%,100%{transform:rotate(0)}75%{transform:rotate(-6deg)}80%{transform:rotate(6deg)}85%{transform:rotate(-4deg)}90%{transform:rotate(3deg)}}
+.giftbox.open .lid{transform:translateY(-90px) rotate(-25deg);opacity:0}
+#confetti{position:absolute;left:50%;top:45%;pointer-events:none;z-index:5}
+#confetti i{position:absolute;font-style:normal;font-size:24px;opacity:0}
+#confetti.go i{animation:pop 1.1s ease-out var(--d) forwards}
+@keyframes pop{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--x),calc(var(--y) + 160px)) rotate(var(--r))}}
+.gifts h2{margin-bottom:2px}
+.gift{display:flex;align-items:center;gap:12px;margin-top:12px;padding:14px 12px;border-radius:16px;background:#fff;border:2px solid var(--line);color:var(--ink);text-decoration:none;opacity:0;transform:translateY(14px);animation:rise .45s ease-out calc(var(--i) * 160ms + 100ms) forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+.g-no{flex:none;width:34px;height:34px;border-radius:50%;background:var(--night);color:var(--gold2);font-family:var(--title);font-size:18px;display:flex;align-items:center;justify-content:center}
+.g-body{flex:1;min-width:0;display:flex;flex-direction:column}
+.g-body b{font-size:17px}
+.g-why{font-size:14px;color:#4A4038;line-height:1.45;margin-top:2px}
+.g-price{font-size:12.5px;color:var(--sub);margin-top:4px}
+.g-go{flex:none;font-family:var(--title);font-size:14px;text-align:center;line-height:1.25;color:var(--bamboo)}
+.avoid{margin-top:14px;background:#FCE9E6;border-radius:12px;padding:10px 12px;font-size:15px}
+.note{font-size:13px;color:var(--sub);margin:10px 0 0}
+.share-q{font-family:var(--title);font-size:19px;margin:0}
+.linkbox{margin-top:10px;background:#FFFDF8;border:2px dashed var(--line);border-radius:12px;padding:10px;font-size:13px;word-break:break-all;color:var(--sub)}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-size:15px;z-index:20;max-width:90vw}
+.foot{color:#BDB4E0;font-size:12.5px;text-align:center;margin-top:22px;line-height:1.6}
+.foot a{color:var(--gold2)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.gift{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">🎁 이불 속 선물방<small>사주로 고르는 운 트이는 선물</small></div>
+  <div class="scene"><img id="scene-img" alt="이불 도령"></div>
+  <div class="bubble"><div class="who">이불 도령</div><div id="bubble-text" aria-live="polite"></div></div>
+
+  <section id="s-home" class="screen">
+    <div class="doors">
+      <button id="h-give" class="door"><span class="e">🎁</span><b>선물 주기</b><small>받을 사람 생일로<br>선물 고르기</small></button>
+      <button id="h-beg" class="door beg"><span class="e">🙏</span><b>선물 조르기</b><small>내 생일로<br>조르기 링크 만들기</small></button>
+    </div>
+    <p class="safe">🔒 생일은 이 화면 안에서만 계산하고 저장하지 않아요</p>
+  </section>
+
+  <section id="s-form" class="screen" hidden>
+    <div class="panel">
+      <h2 id="f-title">🎁 선물 주기</h2>
+      <div id="f-nickwrap" hidden>
+        <label for="f-nick">그대의 별명 <small>(링크 받는 사람이 보게 되오)</small></label>
+        <input id="f-nick" maxlength="10" autocomplete="off" placeholder="예: 쉬고싶은청년">
+      </div>
+      <span class="q" id="f-relq">누구에게 줄 선물이오?</span>
+      <div class="chips" id="f-rel"></div>
+      <span class="q">예산은 얼마쯤이오?</span>
+      <div class="chips" id="f-budget"></div>
+      <span class="q" id="f-dateq">받을 사람의 생일</span>
+      <div class="seg" id="f-cal"><button type="button" data-v="solar" class="on">양력</button><button type="button" data-v="lunar">음력</button></div>
+      <div id="f-leapwrap" class="check" hidden><input type="checkbox" id="f-leap"><label for="f-leap">윤달이에요</label></div>
+      <div class="row" style="margin-top:8px"><select id="f-y" aria-label="태어난 해"></select><select id="f-m" aria-label="월"></select><select id="f-d" aria-label="일"></select></div>
+      <div class="ytype"><label for="f-yt">⌨️ 해 직접 쓰기</label><input id="f-yt" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="예: 1995"><span>년</span></div>
+      <p class="hint">태어난 시간은 몰라도 되오.</p>
+      <p class="err" id="f-err" role="alert"></p>
+      <button id="f-go">도령, 골라 주시오!</button>
+      <button id="f-back" class="ghost">‹ 처음으로</button>
+    </div>
+  </section>
+
+  <section id="s-load" class="screen" hidden>
+    <div class="load"><span class="spin">🎁</span><br>어디 보자~~</div>
+  </section>
+
+  <section id="s-result" class="screen" hidden>
+    <div id="r-disc" class="disc" hidden></div>
+    <div class="card" id="r-type"></div>
+    <div class="card" id="r-el"></div>
+    <div class="boxwrap">
+      <div id="confetti"></div>
+      <button id="r-box" class="giftbox" aria-label="선물 상자 열기"><span class="bx"><span class="lid"></span></span><span class="tap">툭 눌러서 열기</span></button>
+    </div>
+    <div id="r-open" hidden>
+      <div class="card gifts">
+        <h2>운 채워 주는 선물 3가지</h2>
+        <div id="r-gifts"></div>
+        <div class="avoid" id="r-avoid"></div>
+        <p class="note" id="r-note"></p>
+      </div>
+      <div class="card" id="r-share"></div>
+      <button id="r-again" class="ghost" style="color:#BDB4E0">↻ 다른 사람으로 다시 하기</button>
+    </div>
+  </section>
+
+  <div class="foot">
+    재미로 보는 풀이예요. 선물과 기운은 오행의 전통적인 연상(색·재료·성질)으로 짝지었어요.<br>
+    가격은 대략적인 구간이라 쿠팡에서 꼭 확인하세요.<br>
+    <a href="../">🏮 이불 속 고민 상담소에서 사주·타로 보기</a><br>
+    <span id="credit"></span>
+  </div>
+</div>
+<div id="toast" hidden role="status"></div>
+<script>/*__APP__*/</script>
+</body>
+</html>
