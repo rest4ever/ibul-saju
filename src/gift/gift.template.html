@@ -100,7 +100,7 @@ button.dark{background:var(--bamboo);color:#F6EFE0;box-shadow:0 4px 0 #1E3D30}
 #confetti.go i{animation:pop 1.1s ease-out var(--d) forwards}
 @keyframes pop{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--x),calc(var(--y) + 160px)) rotate(var(--r))}}
 .gifts h2{margin-bottom:2px}
-.gift{display:flex;align-items:center;gap:12px;margin-top:12px;padding:14px 12px;border-radius:16px;background:#fff;border:2px solid var(--line);color:var(--ink);text-decoration:none;opacity:0;transform:translateY(14px);animation:rise .45s ease-out calc(var(--i) * 160ms + 100ms) forwards}
+.gift{margin-top:12px;opacity:0;transform:translateY(14px);animation:rise .45s ease-out calc(var(--i) * 160ms + 100ms) forwards}
 @keyframes rise{to{opacity:1;transform:none}}
 .g-no{flex:none;width:34px;height:34px;border-radius:50%;background:var(--night);color:var(--gold2);font-family:var(--title);font-size:18px;display:flex;align-items:center;justify-content:center}
 .g-body{flex:1;min-width:0;display:flex;flex-direction:column}
@@ -115,6 +115,52 @@ button.dark{background:var(--bamboo);color:#F6EFE0;box-shadow:0 4px 0 #1E3D30}
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-size:15px;z-index:20;max-width:90vw}
 .foot{color:#BDB4E0;font-size:12.5px;text-align:center;margin-top:22px;line-height:1.6}
 .foot a{color:var(--gold2)}
+
+/* 2차: 질문 단계 */
+.st-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.st-head h2{margin:0}
+.sdots{display:flex;gap:5px}
+.sdots i{width:8px;height:8px;border-radius:4px;background:#D8CCB0}
+.sdots i.done{background:var(--bamboo)}
+.sdots i.on{width:20px;background:var(--gold)}
+.st-q{font-family:var(--title);font-size:22px;margin:14px 0 10px;line-height:1.3}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opts .opt{margin:0;min-height:64px;display:flex;align-items:center;gap:10px;justify-content:flex-start;text-align:left;background:#FFFDF8;color:var(--ink);border:2px solid var(--line);box-shadow:0 3px 0 var(--line);font-family:var(--body);font-weight:700;font-size:16px;padding:10px 12px}
+.opts .opt .oe{font-size:26px;line-height:1}
+.opts.big{grid-template-columns:1fr 1fr}
+.opts.big .opt{flex-direction:column;justify-content:center;text-align:center;min-height:120px;gap:8px}
+.opts.big .opt .oe{font-size:44px}
+.opts .opt.picked{background:var(--night);color:var(--gold2);border-color:var(--night);transform:scale(.97)}
+#st-body input{width:100%}
+/* 2차: 결과 디테일 */
+.badge{display:inline-block;border-radius:999px;padding:4px 12px;font-weight:700;font-size:14px;margin-bottom:10px}
+.badge small{font-weight:400;opacity:.8}
+.badge.rare{background:linear-gradient(90deg,#F6D2F0,#D6E4FF);color:#5B2A86}
+.badge.mid{background:#FFF1C9;color:#7A5300}
+.badge.com{background:#E9E4DA;color:#5A5045}
+.fine{font-size:12px;color:var(--sub);margin-top:10px!important;line-height:1.5}
+.warn{display:block;margin-top:6px;color:#8A2E22}
+.compat{border:3px solid var(--rose);background:#FFF5F7}
+.compat .score{display:flex;align-items:baseline;gap:4px;margin-top:4px}
+.compat .score b{font-family:var(--title);font-size:46px;color:#C2416B;line-height:1}
+.compat .score span{font-family:var(--title);font-size:20px;color:#C2416B}
+.meter{height:10px;border-radius:5px;background:#F3D9E0;overflow:hidden;margin-top:6px}
+.meter i{display:block;height:100%;background:linear-gradient(90deg,#F2A0B6,#C2416B);border-radius:5px}
+.pair{font-weight:700}
+.gift{display:block;padding:0;background:transparent;border:0}
+.g-main{display:flex;align-items:center;gap:12px;padding:14px 12px;border-radius:16px;background:#fff;border:2px solid var(--line);color:var(--ink);text-decoration:none}
+.promise{margin-top:6px;min-height:44px;font-size:16px;background:var(--rose);box-shadow:0 3px 0 #C98593}
+.promise-box{border:3px dashed var(--rose)}
+.promise-box input{width:100%}
+.cardmsg{background:#fff;border:2px solid var(--line);border-radius:12px;padding:12px;font-size:16px;line-height:1.6}
+.okcard{position:relative;text-align:center;padding-top:28px}
+.okcard h2{font-size:28px;margin:6px 0}
+.stamp{position:absolute;top:12px;right:14px;width:70px;height:70px;border-radius:50%;border:4px solid #C8463A;color:#C8463A;font-family:var(--title);font-size:17px;line-height:1.1;display:flex;align-items:center;justify-content:center;transform:rotate(-14deg);animation:stamp .5s cubic-bezier(.3,1.8,.5,1) .3s both}
+@keyframes stamp{from{transform:scale(2.4) rotate(-14deg);opacity:0}to{transform:scale(1) rotate(-14deg);opacity:1}}
+.okbtn{display:block;margin-top:14px;background:var(--gold);color:var(--ink);text-decoration:none;font-family:var(--title);font-size:18px;border-radius:14px;padding:14px;box-shadow:0 4px 0 #A9792A}
+.confetti{position:absolute;left:50%;top:45%;pointer-events:none;z-index:5}
+.confetti i{position:absolute;font-style:normal;font-size:24px;opacity:0}
+.confetti.go i{animation:pop 1.1s ease-out var(--d) forwards}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.gift{opacity:1;transform:none}}
 </style>
 </head>
@@ -132,26 +178,23 @@ button.dark{background:var(--bamboo);color:#F6EFE0;box-shadow:0 4px 0 #1E3D30}
     <p class="safe">🔒 생일은 이 화면 안에서만 계산하고 저장하지 않아요</p>
   </section>
 
-  <section id="s-form" class="screen" hidden>
+  <section id="s-quiz" class="screen" hidden>
     <div class="panel">
-      <h2 id="f-title">🎁 선물 주기</h2>
-      <div id="f-nickwrap" hidden>
-        <label for="f-nick">그대의 별명 <small>(링크 받는 사람이 보게 되오)</small></label>
-        <input id="f-nick" maxlength="10" autocomplete="off" placeholder="예: 쉬고싶은청년">
+      <div class="st-head"><h2 id="st-title">🎁 선물 주기</h2><div class="sdots" id="st-dots"></div></div>
+      <p class="st-q" id="st-q"></p>
+      <div id="st-body"></div>
+      <div id="quiz-home">
+        <div id="date-form" hidden>
+          <div class="seg" id="f-cal"><button type="button" data-v="solar" class="on">양력</button><button type="button" data-v="lunar">음력</button></div>
+          <div id="f-leapwrap" class="check" hidden><input type="checkbox" id="f-leap"><label for="f-leap">윤달이에요</label></div>
+          <div class="row" style="margin-top:8px"><select id="f-y" aria-label="태어난 해"></select><select id="f-m" aria-label="월"></select><select id="f-d" aria-label="일"></select></div>
+          <div class="ytype"><label for="f-yt">⌨️ 해 직접 쓰기</label><input id="f-yt" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="예: 1995"><span>년</span></div>
+        </div>
       </div>
-      <span class="q" id="f-relq">누구에게 줄 선물이오?</span>
-      <div class="chips" id="f-rel"></div>
-      <span class="q">예산은 얼마쯤이오?</span>
-      <div class="chips" id="f-budget"></div>
-      <span class="q" id="f-dateq">받을 사람의 생일</span>
-      <div class="seg" id="f-cal"><button type="button" data-v="solar" class="on">양력</button><button type="button" data-v="lunar">음력</button></div>
-      <div id="f-leapwrap" class="check" hidden><input type="checkbox" id="f-leap"><label for="f-leap">윤달이에요</label></div>
-      <div class="row" style="margin-top:8px"><select id="f-y" aria-label="태어난 해"></select><select id="f-m" aria-label="월"></select><select id="f-d" aria-label="일"></select></div>
-      <div class="ytype"><label for="f-yt">⌨️ 해 직접 쓰기</label><input id="f-yt" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="예: 1995"><span>년</span></div>
-      <p class="hint">태어난 시간은 몰라도 되오.</p>
-      <p class="err" id="f-err" role="alert"></p>
-      <button id="f-go">도령, 골라 주시오!</button>
-      <button id="f-back" class="ghost">‹ 처음으로</button>
+      <p class="err" id="st-err" role="alert"></p>
+      <button id="st-next" hidden>다음</button>
+      <button id="st-skip" class="ghost" hidden>건너뛰기</button>
+      <button id="st-back" class="ghost">‹ 이전으로</button>
     </div>
   </section>
 
@@ -163,8 +206,10 @@ button.dark{background:var(--bamboo);color:#F6EFE0;box-shadow:0 4px 0 #1E3D30}
     <div id="r-disc" class="disc" hidden></div>
     <div class="card" id="r-type"></div>
     <div class="card" id="r-el"></div>
+    <div class="card compat" id="r-compat" hidden></div>
+    <div id="c-form" class="card" hidden><div id="c-slot"></div><p class="err" id="c-err" role="alert"></p><button id="c-go" class="dark">궁합 보기 💞</button></div>
     <div class="boxwrap">
-      <div id="confetti"></div>
+      <div id="confetti" class="confetti"></div>
       <button id="r-box" class="giftbox" aria-label="선물 상자 열기"><span class="bx"><span class="lid"></span></span><span class="tap">툭 눌러서 열기</span></button>
     </div>
     <div id="r-open" hidden>
@@ -174,8 +219,25 @@ button.dark{background:var(--bamboo);color:#F6EFE0;box-shadow:0 4px 0 #1E3D30}
         <div class="avoid" id="r-avoid"></div>
         <p class="note" id="r-note"></p>
       </div>
+      <div class="card promise-box" id="r-promise" hidden></div>
+      <div class="card" id="r-card" hidden>
+        <div class="kicker">✍️ 선물에 넣을 카드 한마디</div>
+        <p class="cardmsg" id="r-cardmsg"></p>
+        <button id="r-cardcopy" class="ghost">문구 복사하기</button>
+      </div>
       <div class="card" id="r-share"></div>
       <button id="r-again" class="ghost" style="color:#BDB4E0">↻ 다른 사람으로 다시 하기</button>
+    </div>
+  </section>
+
+  <section id="s-ok" class="screen" hidden>
+    <div id="ok-disc" class="disc" hidden></div>
+    <div class="boxwrap"><div id="confetti-ok" class="confetti"></div>
+      <div class="card okcard" id="ok-card"></div></div>
+    <div class="card">
+      <p class="share-q">나도 선물 받고 싶소? 🙏</p>
+      <button id="ok-beg" class="dark">나도 조르기 링크 만들기</button>
+      <button id="ok-give" class="ghost">내가 줄 선물 고르기</button>
     </div>
   </section>
 
