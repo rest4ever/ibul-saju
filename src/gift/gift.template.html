@@ -167,7 +167,7 @@ button.dark{background:var(--bamboo);color:#F6EFE0;box-shadow:0 4px 0 #1E3D30}
 </head>
 <body>
 <script>/* 3일 무료 오픈 뒤 자동으로 닫기 (10/9 사용자 "3일뒤에 자동으로 닫히게") */
-(function(){var C=Date.parse('2026-10-12T00:00:00+09:00');function closed(){return Date.now()>=C||/[?&]closed=1(&|$)/.test(location.search);}function shut(){if(document.getElementById('closed-veil'))return;var v=document.createElement('div');v.id='closed-veil';v.innerHTML='<div class="cv-sign"><small>오늘은 문 닫았소</small><b>이불 속<br>선물방</b><span>🏮</span></div><p>3일 무료 오픈이 끝났어요<br>찾아 주셔서 고마워요 🙇</p>';document.body.appendChild(v);document.documentElement.classList.add('site-closed');}if(closed()){shut();return;}var t=C-Date.now();if(t<2147483647)setTimeout(shut,t);})();
+(function(){var C=Date.parse('2026-10-11T00:00:00+09:00');function closed(){return Date.now()>=C||/[?&]closed=1(&|$)/.test(location.search);}function shut(){if(document.getElementById('closed-veil'))return;var v=document.createElement('div');v.id='closed-veil';v.innerHTML='<div class="cv-sign"><small>오늘은 문 닫았소</small><b>이불 속<br>선물방</b><span>🏮</span></div><p>무료 오픈이 끝났어요<br>찾아 주셔서 고마워요 🙇</p>';document.body.appendChild(v);document.documentElement.classList.add('site-closed');}if(closed()){shut();return;}var t=C-Date.now();if(t<2147483647)setTimeout(shut,t);})();
 </script>
 <div class="wrap">
   <div class="top">🎁 이불 속 선물방<small>사주로 고르는 운 트이는 선물</small></div>

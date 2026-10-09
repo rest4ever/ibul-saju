@@ -359,9 +359,9 @@ button.ghost-dark{background:transparent;color:var(--bamboo);box-shadow:none;bor
 <script>/* 문 열기는 본 프로그램과 따로 바로 동작 (10/5 사용자: "툭 누르면 열려야지") */
 (function(){var d=document.getElementById('door');if(!d)return;var done=false;
 /* 3일 무료 오픈 뒤 자동으로 문 닫기 (10/9 사용자 "3일뒤에 자동으로 닫히게") */
-var CLOSE_AT=Date.parse('2026-10-12T00:00:00+09:00');
+var CLOSE_AT=Date.parse('2026-10-11T00:00:00+09:00');
 function isClosed(){return Date.now()>=CLOSE_AT||/[?&]closed=1(&|$)/.test(location.search);}
-function shut(){d.classList.remove('open','gone');d.classList.add('closed');document.documentElement.classList.add('site-closed');d.setAttribute('aria-label','상담소 문 닫음');d.removeAttribute('tabindex');var s=d.querySelector('.sign small');if(s)s.textContent='오늘은 문 닫았소';var h=d.querySelector('.door-hint');if(h)h.innerHTML='3일 무료 오픈이 끝났어요<br>찾아 주셔서 고마워요 🙇';}
+function shut(){d.classList.remove('open','gone');d.classList.add('closed');document.documentElement.classList.add('site-closed');d.setAttribute('aria-label','상담소 문 닫음');d.removeAttribute('tabindex');var s=d.querySelector('.sign small');if(s)s.textContent='오늘은 문 닫았소';var h=d.querySelector('.door-hint');if(h)h.innerHTML='무료 오픈이 끝났어요<br>찾아 주셔서 고마워요 🙇';}
 if(isClosed()){shut();return;}
 var left=CLOSE_AT-Date.now();if(left<2147483647)setTimeout(shut,left);
 function open(){if(isClosed()){shut();return;}if(done)return;done=true;d.classList.add('open');window.__doorOpen=true;
