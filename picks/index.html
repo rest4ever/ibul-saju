@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>쉬고싶은청년 추천 모음</title>
+<meta name="description" content="자취생 가성비 템, 한 개당 가격을 계산해서 골라 둔 모음">
+<meta name="robots" content="noindex">
+<style>
+/* 쉬고싶은청년 릴스·카드와 같은 스크랩북 색 (크라프트지·크림 종이·잉크·산호) */
+:root{--kraft:#D9C3A0;--cream:#FFF8EC;--ink:#2B2440;--sub:#6B5E4B;--coral:#D9583F;--line:#E8DCCB;--tape:#F2C94C;
+  --font:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;color-scheme:light}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--kraft);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.6;-webkit-text-size-adjust:100%}
+.wrap{max-width:460px;margin:0 auto;padding:20px 16px 56px}
+h1{margin:6px 0 2px;font-size:26px;letter-spacing:-.5px}
+.lead{margin:0 0 16px;color:var(--sub);font-size:14px}
+.notice{background:var(--cream);border:2px solid var(--ink);border-radius:14px;padding:10px 14px;font-size:13.5px;line-height:1.55}
+.card{position:relative;background:var(--cream);border-radius:6px;padding:26px 18px 18px;margin-top:22px;box-shadow:0 8px 18px rgba(40,30,20,.18)}
+.card::before{content:"";position:absolute;top:-10px;left:50%;width:120px;height:26px;margin-left:-60px;background:var(--tape);opacity:.85;transform:rotate(-2deg)}
+.tag{display:inline-block;font-size:12px;font-weight:700;color:var(--coral);border:1.5px solid var(--coral);border-radius:99px;padding:1px 9px}
+.name{margin:8px 0 4px;font-size:19px;font-weight:800;line-height:1.4}
+.emoji{font-size:34px;float:right;margin:-4px 0 0 8px}
+.row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:15px}
+.row b{font-size:16px}
+.big{font-size:28px;color:var(--coral);font-weight:900}
+.small{color:var(--sub);font-size:12.5px;margin-top:8px}
+.btn{display:block;margin-top:14px;text-align:center;background:var(--ink);color:#fff;text-decoration:none;font-weight:800;border-radius:12px;padding:13px}
+.btn[aria-disabled="true"]{background:#9A92AA;pointer-events:none}
+footer{margin-top:28px;color:var(--sub);font-size:12.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>쉬고싶은청년 추천 모음</h1>
+  <p class="lead">자취생 가성비 템, 한 개당 얼마인지 계산해서 골라 뒀어요</p>
+  <p class="notice">이 페이지는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+  <main id="list"></main>
+  <footer>
+    가격·할인은 쿠팡에서 수시로 바뀌어요. 각 상품의 조회일 기준이에요.<br>
+    직접 먹어 본 후기가 아니라 상품 정보와 가격을 정리한 거예요.<br>
+    @rest4.life · 쉬고싶은청년
+  </footer>
+</div>
+<script>
+// 상품 추가는 여기만 고치면 됨. link 는 쿠팡 파트너스 '간편 링크 만들기'로 만든 https://link.coupang.com/... 만 넣는다 (단축 주소 금지)
+const PICKS = [
+  {
+    tag: "자취 한 끼",
+    emoji: "🍛",
+    name: "티아시아키친 커리 4종 세트 (170g × 4팩)",
+    price: 8300,          // 2026-10-11 쿠팡 조회
+    count: 4, unit: "팩",
+    rows: [["구성", "치킨 마크니·게살 푸팟퐁·비프 마살라·스파이시 비프 마살라"], ["섭취 방법", "즉석완조리식품 (상품 정보 기준)"], ["소비기한", "2027-03-24 이후 상품 (상품 정보 기준)"]],
+    checked: "2026-10-11",
+    link: ""              // 파트너스 링크 만들면 넣기
+  }
+];
+const won = n => n.toLocaleString("ko-KR") + "원";
+document.getElementById("list").innerHTML = PICKS.map(p => `
+  <section class="card">
+    <span class="emoji" aria-hidden="true">${p.emoji}</span>
+    <span class="tag">${p.tag}</span>
+    <div class="name">${p.name}</div>
+    <div class="row"><span>한 ${p.unit}에</span><span class="big">${won(Math.round(p.price / p.count))}</span></div>
+    <div class="row"><span>세트 가격</span><b>${won(p.price)} ÷ ${p.count}${p.unit}</b></div>
+    ${p.rows.map(r => `<div class="row"><span>${r[0]}</span><span style="text-align:right">${r[1]}</span></div>`).join("")}
+    <div class="small">${p.checked} 쿠팡 조회 가격 · 밥은 따로 준비해야 해요</div>
+    ${p.link ? `<a class="btn" href="${p.link}" target="_blank" rel="sponsored noopener">쿠팡에서 보기</a>`
+             : `<a class="btn" aria-disabled="true">링크 준비 중</a>`}
+  </section>`).join("");
+</script>
+</body>
+</html>
