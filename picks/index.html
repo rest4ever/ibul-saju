@@ -51,8 +51,8 @@ const PICKS = [
     emoji: "🍛",
     name: "티아시아키친 커리 4종 세트 (170g × 4팩)",
     price: 8300,          // 2026-10-11 쿠팡 조회
-    count: 4, unit: "팩",
-    rows: [["구성", "치킨 마크니·게살 푸팟퐁·비프 마살라·스파이시 비프 마살라"], ["섭취 방법", "즉석완조리식품 (상품 정보 기준)"], ["소비기한", "2027-03-24 이후 상품 (상품 정보 기준)"]],
+    count: 4, unit: "팩", per: "1인분 (170g)",
+    rows: [["맛 4가지", "치킨 마크니·게살 푸팟퐁·비프 마살라·스파이시 비프 마살라"], ["전자레인지", "1분 30초 (700W 기준)"], ["상품평", "17,541개 · 별점 4.5"]],
     checked: "2026-10-11",
     link: "https://link.coupang.com/a/hLnhGbs2M0"   // 2026-10-11 간편 링크 만들기 (상품 6593710826)
   }
@@ -63,10 +63,10 @@ document.getElementById("list").innerHTML = PICKS.map(p => `
     <span class="emoji" aria-hidden="true">${p.emoji}</span>
     <span class="tag">${p.tag}</span>
     <div class="name">${p.name}</div>
-    <div class="row"><span>한 ${p.unit}에</span><span class="big">${won(Math.round(p.price / p.count))}</span></div>
+    <div class="row"><span>${p.per || ("한 " + p.unit)}</span><span class="big">${won(Math.round(p.price / p.count))}</span></div>
     <div class="row"><span>세트 가격</span><b>${won(p.price)} ÷ ${p.count}${p.unit}</b></div>
     ${p.rows.map(r => `<div class="row"><span>${r[0]}</span><span style="text-align:right">${r[1]}</span></div>`).join("")}
-    <div class="small">${p.checked} 쿠팡 조회 가격 · 밥은 따로 준비해야 해요</div>
+    <div class="small">${p.checked} 쿠팡 기준 가격 · 바뀔 수 있어요</div>
     ${p.link ? `<a class="btn" href="${p.link}" target="_blank" rel="sponsored noopener">쿠팡에서 보기</a>`
              : `<a class="btn" aria-disabled="true">링크 준비 중</a>`}
   </section>`).join("");
