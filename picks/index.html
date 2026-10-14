@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>쉬고싶은청년 추천 모음</title>
-<meta name="description" content="자취생 가성비 템, 한 끼·한 개당 가격을 계산해서 골라 둔 모음">
+<meta name="description" content="일본 여행 준비물·자취 가성비 템을 분류별로 골라 둔 모음">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#F5F3EF">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -57,27 +57,61 @@ h1 em{font-style:normal;color:var(--accent)}
 .btn[aria-disabled="true"]{opacity:.45;pointer-events:none}
 footer{margin-top:30px;color:var(--sub);font-size:12px;line-height:1.7}
 footer b{color:var(--ink);font-weight:600}
+
+/* 10/14 사용자 "인스타 링크에 제품이 구분 없이 쭉 스크롤해서 봐야 해서 너무 불편해" →
+   분류 칩(화면 위에 붙어 있음) + 분류별 묶음 + 사진 없는 상품은 한 줄형 짧은 카드. 주소 뒤 #japan·#food 로 바로 그 분류가 열림 */
+.cats{position:sticky;top:0;z-index:5;display:flex;gap:8px;overflow-x:auto;margin:18px -16px 0;padding:10px 16px;background:var(--bg);scrollbar-width:none}
+.cats::-webkit-scrollbar{display:none}
+.cat{flex:none;padding:9px 14px;border-radius:99px;border:1px solid #E2DED7;background:var(--card);color:var(--ink);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.cat[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.cat small{font-weight:500;opacity:.7;margin-left:3px}
+.group h3{margin:26px 0 0;font-size:20px;font-weight:800;letter-spacing:-.4px}
+.group .gsub{margin:4px 0 0;color:var(--sub);font-size:13px}
+.row{display:grid;grid-template-columns:52px 1fr;gap:12px;margin-top:12px;padding:14px;background:var(--card);border-radius:20px;box-shadow:var(--shadow)}
+.ico{width:52px;height:52px;border-radius:16px;background:var(--soft);display:grid;place-items:center;font-size:26px}
+.row .name{font-size:16px}
+.row .why{margin:3px 0 0;color:var(--sub);font-size:13px;line-height:1.45}
+.row .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.row .meta span{font-size:12px;font-weight:600;padding:3px 8px;border-radius:8px;background:var(--soft);color:var(--ink);font-variant-numeric:tabular-nums}
+.row .meta .pr{background:var(--accent);color:#fff}
+.row .btn{grid-column:1/-1;margin-top:2px;padding:12px;font-size:15px;border-radius:14px}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="eyebrow"><span class="dot"></span>@rest4.life · 쉬고싶은청년</div>
-  <h1>가성비 있는 한 끼,<br><em>얼마</em>에 가능할까요?!</h1>
-  <p class="lead">정답은 바로 아래에 있어요 👇</p>
+  <h1>필요한 것만<br><em>골라 보세요</em></h1>
+  <p class="lead">분류를 누르면 그 상품만 바로 보여요 👇</p>
   <p class="notice">이 페이지는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+  <nav class="cats" id="cats" aria-label="분류"></nav>
   <main id="list"></main>
   <footer>
     가격·할인은 쿠팡에서 수시로 바뀌어요. 각 상품의 조회일 기준이에요.<br>
     직접 먹어 본 후기가 아니라 상품 정보와 가격을 정리한 거예요.<br>
-    사진은 이해를 돕기 위한 연출 사진이에요.<br>
+    자취 먹거리 사진은 이해를 돕기 위한 연출 사진이에요.<br>
     <b>@rest4.life</b> · 쉬고싶은청년
   </footer>
 </div>
 <script>
 // 상품 추가는 여기만 고치면 됨. link 는 쿠팡 파트너스 '간편 링크 만들기'로 만든 https://link.coupang.com/... 만 넣는다 (단축 주소 금지)
 // img 는 상품 포장·상표가 없는 연출 사진만 (쿠팡 상품 사진은 저작권 때문에 쓰지 않음)
+// 분류 (주소 #japan 처럼 열면 그 분류만)
+const CATS = [
+  { id: "japan", name: "일본 여행", sub: "가기 전에 미리 챙겨 두면 좋은 것" },
+  { id: "food",  name: "자취 먹거리", sub: "한 끼·한 개당 가격 계산해 둔 것" }
+];
+// 일본 여행: 사진 없이 한 줄형 (상품 사진은 저작권 때문에 안 씀). 2026-10-14 쿠팡 판매량순 상위·상품 페이지 조회
+const ROWS = [
+  { cat: "japan", ico: "🔌", name: "플라이토 돼지코 3개", why: "일본은 100V·납작한 2핀 콘센트", price: 4000, meta: ["한 달 6,000명+ 구매", "상품평 4,621"], checked: "2026-10-14", link: "https://link.coupang.com/a/hPBIa6ZMse" },   // 상품 7858734625
+  { cat: "japan", ico: "🔋", name: "팬톤 케이블 일체형 보조배터리 10000mAh", why: "비행기엔 들고만 타요 · 기내 충전 금지", price: 18900, meta: ["한 달 6,000명+ 구매", "상품평 26,550"], checked: "2026-10-14", link: "https://link.coupang.com/a/hPBMpSp4BU" },   // 상품 7925483056
+  { cat: "japan", ico: "🪙", name: "카스토리 엔화 동전지갑 + 듀얼 파우치", why: "동전이 6종이라 금방 쌓여요", price: 3000, meta: ["상품평 379"], checked: "2026-10-14", link: "https://link.coupang.com/a/hPBPxOHTCS" },   // 상품 9494420428 (판매량 1위 코멧은 파트너스 링크 제한 상품)
+  { cat: "japan", ico: "⚖️", name: "칼마 휴대용 디지털 손저울", why: "쇼핑 후 캐리어 무게 미리 재기", price: 6350, meta: ["한 달 4,000명+ 구매", "상품평 10,341"], checked: "2026-10-14", link: "https://link.coupang.com/a/hPBQwaaxMW" },   // 상품 80294222
+  { cat: "japan", ico: "👜", name: "몽땅겟 접이식 보스턴백 (캐리어 결합)", why: "늘어난 쇼핑 짐 담기", price: 12900, meta: ["상품평 3,708"], checked: "2026-10-14", link: "https://link.coupang.com/a/hPBRzmbZwi" },   // 상품 7163409205
+  { cat: "japan", ico: "🛍️", name: "원이네 포켓 장바구니", why: "일본은 비닐 쇼핑봉투가 유료", price: 2750, meta: ["한 달 200명+ 구매", "상품평 1,033"], checked: "2026-10-14", link: "https://link.coupang.com/a/hPBSvOLWuW" }   // 상품 6429285554
+];
 const PICKS = [
   {
+    cat: "food",
     tag: "자취 간식",
     img: "img/egg.jpg",
     name: "맛꾼 맥반석 구운계란 30구",
@@ -89,6 +123,7 @@ const PICKS = [
     link: "https://link.coupang.com/a/hMYhkHU0LA"   // 2026-10-12 간편 링크 만들기 (상품 8529746863)
   },
   {
+    cat: "food",
     tag: "자취 한 끼",
     img: "img/curry.jpg",
     name: "티아시아키친 커리 4종 세트",
@@ -102,7 +137,17 @@ const PICKS = [
 ];
 const won = n => n.toLocaleString("ko-KR");
 const arrow = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>';
-document.getElementById("list").innerHTML = PICKS.map(p => `
+const rowHTML = r => `
+  <section class="row">
+    <div class="ico" aria-hidden="true">${r.ico}</div>
+    <div>
+      <h2 class="name">${r.name}</h2>
+      <p class="why">${r.why}</p>
+      <div class="meta"><span class="pr">${won(r.price)}원</span>${r.meta.map(m => `<span>${m}</span>`).join("")}</div>
+    </div>
+    <a class="btn" href="${r.link}" target="_blank" rel="sponsored noopener">쿠팡에서 보기 ${arrow}</a>
+  </section>`;
+const cardHTML = p => `
   <section class="card">
     <div class="ph">
       ${p.img ? `<img src="${p.img}" alt="" loading="lazy">` : ""}
@@ -119,7 +164,28 @@ document.getElementById("list").innerHTML = PICKS.map(p => `
       ${p.link ? `<a class="btn" href="${p.link}" target="_blank" rel="sponsored noopener">쿠팡에서 보기 ${arrow}</a>`
                : `<a class="btn" aria-disabled="true">링크 준비 중</a>`}
     </div>
-  </section>`).join("");
+  </section>`;
+function render(sel) {
+  document.getElementById("cats").innerHTML =
+    [{ id: "all", name: "전체" }, ...CATS].map(c => {
+      const n = c.id === "all" ? ROWS.length + PICKS.length : ROWS.filter(r => r.cat === c.id).length + PICKS.filter(p => p.cat === c.id).length;
+      return `<button class="cat" data-id="${c.id}" aria-pressed="${sel === c.id}">${c.name}<small>${n}</small></button>`;
+    }).join("");
+  document.getElementById("list").innerHTML = CATS.filter(c => sel === "all" || sel === c.id).map(c => `
+    <div class="group" id="g-${c.id}">
+      <h3>${c.name}</h3><p class="gsub">${c.sub}</p>
+      ${ROWS.filter(r => r.cat === c.id).map(rowHTML).join("")}
+      ${PICKS.filter(p => p.cat === c.id).map(cardHTML).join("")}
+    </div>`).join("");
+  document.querySelectorAll(".cat").forEach(b => b.onclick = () => {
+    const id = b.dataset.id;
+    history.replaceState(null, "", id === "all" ? location.pathname : "#" + id);
+    render(id);
+  });
+}
+const start = location.hash.slice(1);
+render(CATS.some(c => c.id === start) ? start : "all");
+window.addEventListener("hashchange", () => { const h = location.hash.slice(1); render(CATS.some(c => c.id === h) ? h : "all"); });
 </script>
 </body>
 </html>
