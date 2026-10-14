@@ -97,6 +97,7 @@ footer b{color:var(--ink);font-weight:600}
 // img 는 상품 포장·상표가 없는 연출 사진만 (쿠팡 상품 사진은 저작권 때문에 쓰지 않음)
 // 분류 (주소 #japan 처럼 열면 그 분류만)
 const CATS = [
+  { id: "bath",  name: "욕실·청소", sub: "솔질 말고 편하게 하는 방법" },   // 10/14 릴스 028 곰팡이 제거제
   { id: "japan", name: "일본 여행", sub: "가기 전에 미리 챙겨 두면 좋은 것" },
   { id: "food",  name: "자취 먹거리", sub: "한 끼·한 개당 가격 계산해 둔 것" }
 ];
@@ -107,7 +108,8 @@ const ROWS = [
   { cat: "japan", ico: "🪙", name: "카스토리 엔화 동전지갑 + 듀얼 파우치", why: "동전이 6종이라 금방 쌓여요", price: 3000, meta: ["상품평 379"], checked: "2026-10-14", link: "https://link.coupang.com/a/hPBPxOHTCS" },   // 상품 9494420428 (판매량 1위 코멧은 파트너스 링크 제한 상품)
   { cat: "japan", ico: "⚖️", name: "칼마 휴대용 디지털 손저울", why: "쇼핑 후 캐리어 무게 미리 재기", price: 6350, meta: ["한 달 4,000명+ 구매", "상품평 10,341"], checked: "2026-10-14", link: "https://link.coupang.com/a/hPBQwaaxMW" },   // 상품 80294222
   { cat: "japan", ico: "👜", name: "몽땅겟 접이식 보스턴백 (캐리어 결합)", why: "늘어난 쇼핑 짐 담기", price: 12900, meta: ["상품평 3,708"], checked: "2026-10-14", link: "https://link.coupang.com/a/hPBRzmbZwi" },   // 상품 7163409205
-  { cat: "japan", ico: "🛍️", name: "원이네 포켓 장바구니", why: "일본은 비닐 쇼핑봉투가 유료", price: 2750, meta: ["한 달 200명+ 구매", "상품평 1,033"], checked: "2026-10-14", link: "https://link.coupang.com/a/hPBSvOLWuW" }   // 상품 6429285554
+  { cat: "japan", ico: "🛍️", name: "원이네 포켓 장바구니", why: "일본은 비닐 쇼핑봉투가 유료", price: 2750, meta: ["한 달 200명+ 구매", "상품평 1,033"], checked: "2026-10-14", link: "https://link.coupang.com/a/hPBSvOLWuW" },   // 상품 6429285554
+  { cat: "bath", ico: "🧴", name: "홈스타 바르는 곰팡이 싹 120ml", why: "실리콘 줄 따라 짜서 발라 두는 젤 타입", price: 3300, meta: ["상품평 43,069", "한 달 9,000명+ 구매"], checked: "2026-10-14", link: "https://link.coupang.com/a/hPSr4g79Qy" }   // 상품 7506301128 · 일반판매가(와우 회원가 3,130원)
 ];
 const PICKS = [
   {
